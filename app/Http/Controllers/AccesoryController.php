@@ -17,7 +17,7 @@ class AccesoryController extends Controller
     public function index()
     {
          $accesories = DB::table('accesories')->paginate(5);
-        return view('accesories.index', compact('acessories'));
+        return view('accesories.index', compact('accesories'));
     }
 
     /**

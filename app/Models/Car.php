@@ -10,13 +10,17 @@ class Car extends Model
     use HasFactory;
 
     protected $fillable = [
-    	'Name',
-    	'Mark',
-    	'Kind',
-    	'Date',
-    	'Time',
-    	'Enrollment',
-    	'Price',
-    	'Description'
+    	'brand', 
+        'model',
+        'color',
+        'serialNumber',
+        'matricule',
+        'numberDoors',
+        'numberChair',
+        'mileage',
+        'numberCylenders',
+        'description',
+        'comentary',
+        'available'
     ];
 }

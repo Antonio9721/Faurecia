@@ -15,14 +15,18 @@ class CreateCarsTable extends Migration
     {
         Schema::create('cars', function (Blueprint $table) {
             $table->id();
-            $table->string('Name', 45);
-            $table->string('Mark', 45);
-            $table->string('Kind', 45);
-            $table->date('Date');
-            $table->time('Time');
-            $table->string('Enrollment', 10);
-            $table->string('Price', 25);
-            $table->text('Description');
+            $table->string('brand', 100);
+            $table->string('model', 50);
+            $table->string('color', 50)->nullable();
+            $table->string('serialNumber', 50);
+            $table->tinyInteger('matricule')->nullable();
+            $table->tinyInteger('numberDoors');
+            $table->tinyInteger('numberChair');
+            $table->integer('mileage');
+            $table->tinyInteger('numberCylenders');
+            $table->text('description');
+            $table->string('comentary')->nullable();
+            $table->tinyInteger('available')->default(1);
             $table->timestamps();
         });
     }

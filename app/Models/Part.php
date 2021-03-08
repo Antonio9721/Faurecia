@@ -13,6 +13,8 @@ class Part extends Model
     	'Name',
     	'Mark',
     	'Kind',
-    	'Description'
+    	'Description',
+    	'Comentary',
+    	'Available'
     ];
 }

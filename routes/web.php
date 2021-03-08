@@ -1,6 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CarController;
+use App\Http\Controllers\AccesoryController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\EmployeController;
+use App\Http\Controllers\PartController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,9 +24,34 @@ Route::get('/', function () {
 });
 
 //CRUD normal
-Route::resource('accesories','AccesoryController');
-Route::resource('cars','CarController');
-Route::resource('clients','ClientController');
-Route::resource('employes','EmployeController');
-Route::resource('parts','PartController');
+Route::resources([
+'cars' => CarController::class,
+]);
 
+Route::resources([
+'accesories' => AccesoryController::class,
+]);
+
+Route::resources([
+'clients' => ClientController::class,
+]);
+
+Route::resources([
+'employes' => EmployeController::class,
+]);
+
+Route::resources([
+'parts' => PartController::class,
+]);
+
+
+
+
+//Auth::routes();
+
+//Route::get('/home', 'HomeController@index')->name('home');
+
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -19,6 +19,8 @@ class CreatePartsTable extends Migration
             $table->string('Mark', 25);
             $table->string('Kind', 25);
             $table->text('Description');
+            $table->text('Comentary');
+            $table->string('Available');
             $table->timestamps();
         });
     }
