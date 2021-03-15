@@ -17,10 +17,11 @@ class CreatePartsTable extends Migration
             $table->id();
             $table->string('Name', 25);
             $table->string('Mark', 25);
-            $table->string('Kind', 25);
+            $table->text('Model');
+            $table->string('Price', 20);
             $table->text('Description');
             $table->text('Comentary');
-            $table->string('Available');
+            $table->tinyInteger('Available');
             $table->timestamps();
         });
     }

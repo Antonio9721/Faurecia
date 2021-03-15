@@ -12,7 +12,8 @@ class Part extends Model
     protected $fillable = [
     	'Name',
     	'Mark',
-    	'Kind',
+    	'Model',
+    	'Price',
     	'Description',
     	'Comentary',
     	'Available'

@@ -1,81 +1,80 @@
-<link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">
+@extends('layout.layout')
+@extends('layout.nav')
+@section('content')
 
-<!-- @forelse ($coches as $car)
-<li>
-	<h3>{{ $car->brand }} {{ $car->model }}</h3>
-	<p>{{ $car->color}}</p>
+<div class="container">
+	<center><h4>Proveedor Mundial de Automóviles</h4></center>
+	<center><h5>"Faurecia México"</h5></center>
+<div class="card">
+  <div class="card-header bg-success">
+  	<div class="row">
+  		<div class="col-md-8">
+  			<center>
+    		<h4 class="card-title">Vehículos Registrados en la Base de Datos</h4>
+    		</center>
+    	</div>
+    	<div class="col-md-4">
+    		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    			<a class="btn btn-primary" href="{{ route('cars.create') }}">+Nuevo</a>
+     			</div>
+     		</div>
+  		</div>
+  </div>
 
-@empty
-	<h2>La tabla no tiene registros</h2>
-@endforelse -->
+  <div class="card-body">
+  	<table class="table table-hover">
+  		<thead>
+  			<tr>
+  				<th><h5>Vehículo</h5></th>
+  				<th><h5>Información</h5></th>
+  				<th><h5>Descripción</h5></th>
+  				<th><h5>Detalles</h5></th>
+  				<th><h5>Acciones</h5></th>
+  			</tr>
 
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Registro de Automóviles</title>
-</head>
-<body>
-	<div>
-		<div align="center">
-		<h4>Industria Automotriz Faurecia</h4>
-		<h5>Autos Registrados</h5>
-		</div>
+  		</thead>
 
-		<div class="row">
-	<div class="col-sn-2"><a class="btn btn-primary" href="{{ route('cars.create') }}">Registrar Auto</a></div>
-
-		<div class="card-body">
-			 <tr class="table-secondary">
-				<table class="table " id="example1" width="100%" cellspacing="0">
-					<thead class="table-dark">
-						<tr>
-							<td>Id</td>
-							<td>Marca</td>
-							<td>Modelo</td>
-							<td>Número de Serie</td>
-							<td>Matricula</td>
-							<td>Número Puertas</td>
-							<td>Número Asientos</td>
-							<td>Kilometraje</td>
-							<td>Cilindros</td>
-							<td>Descripción</td>
-							<td>Comentario</td>
-							<td>Disponibilidad</td>
-					
-							<td>Editar</td>
-							<td>Eliminar</td>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach ($coches as $car):?>
+  		<tbody>
+  			<?php foreach ($cars as $car):?>
 							<tr>
-								<td><?=$car->id ?></td>
-								<td><?=$car->brand ?></td>
-								<td><?=$car->model ?></td>
-								<td><?=$car->color ?></td>
-								<td><?=$car->serialNumber ?></td>
-								<td><?=$car->matricule ?></td>
-								<td><?=$car->numberDoors ?></td>
-								<td><?=$car->numberChair ?></td>
-								<td><?=$car->mileage ?></td>
-								<td><?=$car->numberCylenders ?></td>
-								<td><?=$car->numberChair ?></td>
-								<td><?=$car->description ?></td>
-								<td><?=$car->comentary ?></td>
-								<td><?=$car->available ?></td>
-								
-			
-								<td> 
-								<a href="{{ route('cars.show', $car->id) }}"><button class="form-control btn btn-success" onclick="return Edition()">Consultar</button></a>
-								</td>
 								<td>
-								<a href="{{ route('cars.edit', $car->id) }}"><button class="form-control btn btn-danger" onclick="return Delete()">Editar</button></a>
+									<p> <b> Marca:</b> <?=$car->brand ?> </p>
+									<p> <b> Modelo:</b> <?=$car->model ?> </p> 
 								</td>
+
 								<td>
-								
-							</tr>
-						<?php endforeach ?>
-					</tbody>
+									<p> <b> Número de serie:</b> <?=$car->serialNumber ?> </p>
+									<p> <b> Puertas:</b> <?=$car->numberDoors ?> </p>
+									<p> <b> Asientos:</b> <?=$car->numberChair ?> </p>
+									<p> <b> Matrícula:</b> <?=$car->matricule ?> </p>
+							</td>
+
+							<td>
+								<p> <b> Descripción:</b> <?=$car->description ?> </p>
+								<p> <b> Comentario:</b> <?=$car->comentary ?> </p>
+							</td>
+								<td>
+								<p> <b>Kilometraje:</b> <?=$car->mileage ?></p>
+								<p> <b>Cilindros:</b> <?=$car->numberCylenders ?></p>
+								<p> <b>Color:</b> <?=$car->color ?> </p>
+								<p> <b>Disponible:</b> <?=$car->available ?></p>
+							</td>
+
+
+							<td> 
+								<form action="{{ route('cars.destroy', $car->id) }}" method="post">
+      									<a type="submit" class="btn btn-info" href="{{ route('cars.show', $car->id) }}">Ver</a>
+      									<a type="submit" class="btn btn-success" href="{{ route('cars.edit', $car->id) }}">Editar</a>
+       									@csrf
+      									@method('DELETE')
+      									<button type="submit" class="btn btn-danger">Eliminar</button>
+    								</form> 
+								</div>
+							</td>
+						</tr>
+								<?php endforeach ?>		
+	
+		</tbody>
 				</table>
 			</div>
 		</div>
@@ -99,3 +98,4 @@
 	}
 </script>
 </html>
+@endsection

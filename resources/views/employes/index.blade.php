@@ -1,61 +1,69 @@
-<link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">
+@extends('layout.layout')
+@extends('layout.nav')
+@section('content')
 
 
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Registro de Empleados</title>
-</head>
-<body>
-	<div>
-		<div align="center">
-		<h4>Industria Automotriz Faurecia</h4>
-		<h5>Empleados Registrados</h5>
-		</div>
-
-		<div class="row">
-	<div class="col-sn-2"><a class="btn btn-primary" href="{{ route('employes.create') }}">Registrar Empleado</a></div>
-
+<div class="container">
+	<center><h4>Proveedor Mundial de Automóviles</h4></center>
+	<center><h5>"Faurecia México"</h5></center>
+<div class="card">
+  <div class="card-header bg-success">
+  	<div class="row">
+  		<div class="col-md-8">
+  			<center>
+    		<h4 class="card-title">Empleados Registrados en la Base de Datos</h4>
+    		</center>
+    	</div>
+    	<div class="col-md-4">
+    		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    			<a class="btn btn-primary" href="{{ route('employes.create') }}">+ Nuevo</a>
+     			</div>
+     		</div>
+  		</div>
+  </div>
+	
 		<div class="card-body">
-			 <tr class="table-secondary">
-				<table class="table " id="example1" width="100%" cellspacing="0">
-					<thead class="table-dark">
+  			<table class="table table-hover">
 						<tr>
-							<td>Id</td>
-							<td>Nombre</td>
-							<td>Apellidos</td>
-							<td>Área de Trabajo</td>
-							<td>Salario</td>
-							<td>Clave deidentificación</td>
-							<td>Correo Electrónico</td>
-							<td>Número Teléfonico</td>
-					
-							<td>Editar</td>
-							<td>Eliminar</td>
+							<th><h5>Nombre</h5></th>
+							<th><h5>Información</h5></th>
+							<th><h5>Detalles</h5></th>
+							<th><h5>Acciones</h5></th>
 						</tr>
 					</thead>
+
+
 					<tbody>
 						<?php foreach ($employes as $employe):?>
 							<tr>
-								<td><?=$employe->id ?></td>
-								<td><?=$employe->Firstname ?></td>
-								<td><?=$employe->Secondname ?></td>
-								<td><?=$employe->Area ?></td>
-								<td><?=$employe->Salary ?></td>
-								<td><?=$employe->Keycode ?></td>
-								<td><?=$employe->Email ?></td>
-								<td><?=$employe->Phone ?></td>
-								
+								<td>
+									<p> <?=$employe->Firstname ?></p>
+									<p> <?=$employe->Secondname ?></p>
+								</td>
+
+								<td>
+									<p> <b>Área de Trabajo:</b> <?=$employe->Area ?></p>
+									<p> <b>Salario:</b> <?=$employe->Salary ?></p>
+									<p> <b>Clave:</b> <?=$employe->Keycode ?></p>
+								</td>
+
+								<td>
+									<p> <b>Correo:</b> <?=$employe->Email ?></p>
+									<p> <b>Teléfono:</b> <?=$employe->Phone ?></p>
+								</td>					
 			
-								<td> 
-								<a href="{{ route('employes.show', $employe->id) }}"><button class="form-control btn btn-success" onclick="return Edition()">Consultar</button></a>
-								</td>
-								<td>
-								<a href="{{ route('employes.edit', $employe->id) }}"><button class="form-control btn btn-danger" onclick="return Delete()">Editar</button></a>
-								</td>
-								<td>
-								
-							</tr>
+							<td> 
+								<form action="{{ route('employes.destroy', $employe->id) }}" method="post">
+      									<a type="submit" class="btn btn-info" href="{{ route('employes.show', $employe->id) }}">Ver</a>
+      									<a type="submit" class="btn btn-success" href="{{ route('employes.edit', $employe->id) }}">Editar</a>
+       									@csrf
+      									@method('DELETE')
+      									<button type="submit" class="btn btn-danger">Eliminar</button>
+    								</form> 
+								</div>
+							</td>
+						</tr>
+
 						<?php endforeach ?>
 					</tbody>
 				</table>
@@ -81,3 +89,4 @@
 	}
 </script>
 </html>
+@endsection

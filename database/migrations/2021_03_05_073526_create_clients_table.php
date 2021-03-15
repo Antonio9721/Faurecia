@@ -19,9 +19,10 @@ class CreateClientsTable extends Migration
             $table->string('Secondname', 45);
             $table->text('Address');
             $table->text('Job');
+            $table->text('Salary');
             $table->text('Bank');
-            $table->integer('Numcount');
-            $table->integer('Phone');
+            $table->text('Numcount');
+            $table->text('Phone');
             $table->string('Email', 45);
             $table->timestamps();
         });

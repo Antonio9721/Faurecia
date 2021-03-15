@@ -16,8 +16,12 @@ class CreateAccesoriesTable extends Migration
         Schema::create('accesories', function (Blueprint $table) {
             $table->id();
             $table->string('Name', 45);
-            $table->string('Kind', 45);
+            $table->string('Model', 45);
+            $table->text('Numserie');
+            $table->text('Price');
             $table->string('State', 45);
+            $table->text('Comentary');
+            $table->tinyInteger('Available');
             $table->date('Date');
             $table->time('Time');
             $table->timestamps();

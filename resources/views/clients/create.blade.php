@@ -1,4 +1,6 @@
-<link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">
+@extends('layout.layout')
+@extends('layout.nav')
+@section('content')
 
 <!DOCTYPE html>
 <html>
@@ -9,6 +11,7 @@
 <div class="col-12">
 	<body>
 		<form action="{{ route('clients.store') }}" method="post">
+			@csrf
 			<div align="center">
 				<h4>Industria Automotriz Faurecia</h4>
 					<h5>Registrar Cliente</h5>
@@ -30,35 +33,33 @@
 		
 <label for="">Dirección:</label>
 	<input class="form-control" type="text" name="Address" id="" placeholder="Dirección">
-		<br>
-
-	
-<label for="">Oficio:</label>
-	<input class="form-control" type="text" name="Job" id="" placeholder="Oficio">
 		</div>
 
-<div class="form-group col-md-3">
-	<label for="">Salario Quincenal:</label>
-				<input class="form-control" type="text" name="Salary" id="" placeholder="Salario Quincenal">
-					<br>
+<div class="form-group col-md-3">	
+	<label for="">Oficio:</label>
+		<input class="form-control" type="text" name="Job" id="" placeholder="Oficio">
+			<br>
 
-		
+
+<label for="">Salario Quincenal:</label>
+	<input class="form-control" type="int" name="Salary" id="" placeholder="Salario Quincenal">
+		<br>
+	
 <label for="">Compañia Bancaria:</label>
 	<input class="form-control" type="text" name="Bank" id="" placeholder="Compañia Bancaria">
-		<br>
+		</div>
 
-		
-<label for="">Número de Cuenta:</label>
-	<input class="form-control" type="int" name="Numcount" id="" placeholder="Número de Cuenta">
-		<br>
+<div class="form-group col-md-3">	
+	<label for="">Número de Cuenta:</label>
+		<input class="form-control" type="int" name="Numcount" id="" placeholder="Número de Cuenta">
+			<br>
 
-	
-<label for="">Número Teléfonico:</label>
-	<input class="form-control" type="int" name="Phone" id="" placeholder="Número Teléfonico">
-		<br>
-			</div>
 
-<div class="form-group col-md-3">
+	<label for="">Número Teléfonico:</label>
+		<input class="form-control" type="int" name="Phone" id="" placeholder="Número Teléfonico">
+			<br>
+
+
 	<label for="">Correo Electrónico:</label>
 		<input class="form-control" type="text" name="Email" id="" placeholder="Correo Electrónico">
 			<br>
@@ -77,3 +78,5 @@
 </form>
 </body>
 </div>
+
+@endsection

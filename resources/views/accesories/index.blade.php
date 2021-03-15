@@ -1,59 +1,72 @@
-<link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">
+@extends('layout.layout')
+@extends('layout.nav')
+@section('content')
 
 
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Registro de Accesorios</title>
-</head>
-<body>
-	<div>
-		<div align="center">
-		<h4>Industria Automotriz Faurecia</h4>
-		<h5>Autos Registrados</h5>
-		</div>
-
-		<div class="row">
-	<div class="col-sn-2"><a class="btn btn-primary" href="{{ route('accesories.create') }}">Registrar Accesorio</a></div>
-
+<div class="container">
+	<center><h4>Proveedor Mundial de Automóviles</h4></center>
+	<center><h5>"Faurecia México"</h5></center>
+<div class="card">
+  <div class="card-header bg-success">
+  	<div class="row">
+  		<div class="col-md-8">
+  			<center>
+    		<h4 class="card-title">Accesorios Registrados en la Base de Datos</h4>
+    		</center>
+    	</div>
+    	<div class="col-md-4">
+    		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    			<a class="btn btn-primary" href="{{ route('accesories.create') }}">+ Nuevo</a>
+     			</div>
+     		</div>
+  		</div>
+  </div>
+	
 		<div class="card-body">
-			 <tr class="table-secondary">
-				<table class="table " id="example1" width="100%" cellspacing="0">
-					<thead class="table-dark">
+  			<table class="table table-hover">
 						<tr>
-							<td>Id</td>
-							<td>Nombre</td>
-							<td>Tipo</td>
-							<td>Precio</td>
-							<td>Estado</td>
-							<td>Fecha de Adquisición</td>
-							<td>Hora de Adquisición</td>
-					
-							<td>Editar</td>
-							<td>Eliminar</td>
+							<th>Nombre</th>
+							<th>Información</th>
+							<th>Detalles</th>
+							<th>Acciones</th>
+							
 						</tr>
 					</thead>
+
 					<tbody>
 						<?php foreach ($accesories as $accesory):?>
 							<tr>
-								<td><?=$accesory->id ?></td>
-								<td><?=$accesory->Name ?></td>
-								<td><?=$accesory->Kind ?></td>
-								<td><?=$accesory->Price ?></td>
-								<td><?=$accesory->State ?></td>
-								<td><?=$accesory->Date ?></td>
-								<td><?=$accesory->Time ?></td>
+								<td>
+									<p> <b>Nombre:</b> <?=$accesory->Name ?></p>
+									<p> <b>Modelo:</b> <?=$accesory->Model ?></p>
+									<p> <b>Número de Serie:</b> <?=$accesory->Numserie ?></p>
+								</td>
+
+								<td>
+									<p> <b>Precio:</b> <?=$accesory->Price ?></p>
+									<p> <b>Estado:</b> <?=$accesory->State ?></p>
+									<p> <b>Comentario:</b> <?=$accesory->Comentary ?></p>
+								</td>
+
+								<td>
+									<p> <b>Disponible:</b> <?=$accesory->Available ?></p>
+									<p> <b>Fecha:</b> <?=$accesory->Date ?></p>
+									<p> <b>Hora:</b> <?=$accesory->Time ?></p>
+									
+								</td>
 								
 			
 								<td> 
-								<a href="{{ route('accesories.show', $accesory->id) }}"><button class="form-control btn btn-success" onclick="return Edition()">Consultar</button></a>
-								</td>
-								<td>
-								<a href="{{ route('accesories.edit', $accesory->id) }}"><button class="form-control btn btn-danger" onclick="return Delete()">Editar</button></a>
-								</td>
-								<td>
-								
-							</tr>
+								<form action="{{ route('accesories.destroy', $accesory->id) }}" method="post">
+      									<a type="submit" class="btn btn-info" href="{{ route('accesories.show', $accesory->id) }}">Ver</a>
+      									<a type="submit" class="btn btn-success" href="{{ route('accesories.edit', $accesory->id) }}">Editar</a>
+       									@csrf
+      									@method('DELETE')
+      									<button type="submit" class="btn btn-danger">Eliminar</button>
+    								</form> 
+								</div>
+							</td>
+						</tr>	
 						<?php endforeach ?>
 					</tbody>
 				</table>
@@ -79,3 +92,5 @@
 	}
 </script>
 </html>
+
+@endsection

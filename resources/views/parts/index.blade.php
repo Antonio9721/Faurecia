@@ -1,67 +1,73 @@
-<link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">
+@extends('layout.layout')
+@extends('layout.nav')
+@section('content')
 
 
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Registro de Empleados</title>
-</head>
-<body>
-	<div>
-		<div align="center">
-		<h4>Industria Automotriz Faurecia</h4>
-		<h5>Autopartes Registradas</h5>
-		</div>
-
-		<div class="row">
-	<div class="col-sn-2"><a class="btn btn-primary" href="{{ route('parts.create') }}">Registrar Autoparte</a></div>
-
+<div class="container">
+	<center><h4>Proveedor Mundial de Automóviles</h4></center>
+	<center><h5>"Faurecia México"</h5></center>
+<div class="card">
+  <div class="card-header bg-success">
+  	<div class="row">
+  		<div class="col-md-8">
+  			<center>
+    		<h4 class="card-title">Autopartes Registradas en la Base de Datos</h4>
+    		</center>
+    	</div>
+    	<div class="col-md-4">
+    		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    			<a class="btn btn-primary" href="{{ route('parts.create') }}">+ Nuevo</a>
+     			</div>
+     		</div>
+  		</div>
+  </div>
+	
 		<div class="card-body">
-			 <tr class="table-secondary">
-				<table class="table " id="example1" width="100%" cellspacing="0">
-					<thead class="table-dark">
+  			<table class="table table-hover">
 						<tr>
-							<td>Id</td>
-							<td>Nombre</td>
-							<td>Marca</td>
-							<td>Tipo</td>
-							<td>Descripción</td>
-							<td>Comentario</td>
-							<td>Disponible</td>
-							
-					
-							<td>Editar</td>
-							<td>Eliminar</td>
-						</tr>
+   						    <th><h5>Autoparte</h5></th>
+							<th><h5>Información</h5></th>
+							<th><h5>Detalles</h5></th>
+							<th><h5>Acciones</h5></th>
+						</tr>							
+						
 					</thead>
+
 					<tbody>
 						<?php foreach ($parts as $part):?>
 							<tr>
-								<td><?=$part->id ?></td>
-								<td><?=$part->Name ?></td>
-								<td><?=$part->Mark ?></td>
-								<td><?=$part->Kind ?></td>
-								<td><?=$part->Description ?></td>
-								<td><?=$part->Comentary ?></td>
-								<td><?=$part->Available ?></td>
-								
-			
-								<td> 
-								<a href="{{ route('parts.show', $part->id) }}"><button class="form-control btn btn-success" onclick="return Edition()">Consultar</button></a>
-								</td>
 								<td>
-								<a href="{{ route('parts.edit', $part->id) }}"><button class="form-control btn btn-danger" onclick="return Delete()">Editar</button></a>
+									<p> <b>Nombre:</b> <?=$part->Name ?></p>
+									<p> <b>Marca: </b> <?=$part->Mark ?></p>
 								</td>
+
 								<td>
-								
-							</tr>
+									<p> <b>Modelo: </b> <?=$part->Model ?></p>
+									<p> <b>Descripción: </b> <?=$part->Description ?></p>
+									<p> <b>Price: </b> <?=$part->Price ?> </p>
+								</td>
+
+								<td>
+									<p> <b>Comentario: </b> <?=$part->Comentary ?></p>
+									<p> <b>Disponible: </b> <?=$part->Available ?></p>
+									</td>
+
+									<td>
+										<form action="{{ route('parts.destroy', $part->id) }}" method="post">
+      									<a type="submit" class="btn btn-info" href="{{ route('parts.show', $part->id) }}">Ver</a>
+      									<a type="submit" class="btn btn-success" href="{{ route('parts.edit', $part->id) }}">Editar</a>
+       									@csrf
+      									@method('DELETE')
+      									<button type="submit" class="btn btn-danger">Eliminar</button>
+    								</form> 
+								</div>
+							</td>
+						</tr>								
 						<?php endforeach ?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</body>
+					</tbody> 
+	</table>
+</div>
+</div>
 
 <script type="text/javascript">
 	function Edition() {
@@ -80,3 +86,4 @@
 	}
 </script>
 </html>
+@endsection

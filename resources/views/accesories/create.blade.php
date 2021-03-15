@@ -1,4 +1,6 @@
-<link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">
+@extends('layout.layout')
+@extends('layout.nav')
+@section('content')
 
 <!DOCTYPE html>
 <html>
@@ -9,9 +11,10 @@
 <div class="col-12">
 	<body>
 		<form action="{{ route('accesories.store') }}" method="post">
+			@csrf
 			<div align="center">
-				<h4>Industria Automotriz Faurecia</h4>
-					<h5>Registrar Accesorios</h5>
+					<h4>Industria Automotriz Faurecia</h4>
+					<h5>Registrar Accesorio</h5>
 						</div>
 
 <br>
@@ -23,28 +26,41 @@
 					<br>
 
 		
-<label for="">Tipo:</label>
-	<input class="form-control" type="text" name="Kind" id="" placeholder="Tipo">
-		</div>
+<label for="">Modelo:</label>
+	<input class="form-control" type="text" name="Model" id="" placeholder="Modelo">
+		<br>
+
+	
+<label for="">Número de Serie:</label>
+		<input class="form-control" type="int" name="Numserie" id="" placeholder="Número de Serie">
+			</div>
 
 <div class="form-group col-md-3">	
 	<label for="">Precio:</label>
 		<input class="form-control" type="text" name="Price" id="" placeholder="Precio">
 			<br>
 
-	
 <label for="">Estado:</label>
 	<input class="form-control" type="text" name="State" id="" placeholder="Estado">
-		</div>
-
-<div class="form-group col-md-3">
-	<label for="">Fecha de Compra:</label>
-		<input class="form-control" type="date" name="Date" id="" placeholder="Fecha">
-			<br>
+		<br>
 
 	
-<label for="">Hora de Compra:</label>
-	<input class="form-control" type="time" name="Time" id="" placeholder="Hora">
+<label for="">Comentario:</label>
+	<input class="form-control" type="text" name="Comentary" id="" placeholder="Comentario">
+		<br>
+		</div>
+
+<div class="form-group col-md-3">	
+	<label for="">Disponible:</label>
+		<input class="form-control" type="number" name="Available" id="" placeholder="Disponible">
+			<br>
+
+<label for="">Fecha de Adquisición:</label>
+	<input class="form-control" type="date" name="Date" id="" placeholder="Fecha de Adquisición">
+		<br>
+
+<label for="">Hora de Adquisición:</label>
+	<input class="form-control" type="time" name="Time" id="" placeholder="Hora de Adquisición">
 		</div>
 
 <div class="col-6"></div>
@@ -53,9 +69,10 @@
 			</div>
 
 <div class="form-group col-md-2">
-	<input class="form-control btn btn-danger" type="reset" name="Restablecer">
+	<input class="form-control btn btn-warning" type="reset" name="Restablecer">
 		</div>
 	</div>
 </form>
 </body>
 </div>
+@endsection

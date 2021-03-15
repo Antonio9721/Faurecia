@@ -1,4 +1,7 @@
-<link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">
+@extends('layout.layout')
+@extends('layout.nav')
+@section('content')
+
 
 <!DOCTYPE html>
 <html>
@@ -9,6 +12,7 @@
 <div class="col-12">
 	<body>
 		<form action="{{ route('cars.store') }}" method="post">
+			@csrf
 			<div align="center">
 				<h4>Industria Automotriz Faurecia</h4>
 					<h5>Registrar Automóvil</h5>
@@ -33,13 +37,13 @@
 		<br>
 
 	
-	<label for="">Número de Serie:</label>
-		<input class="form-control" type="number" name="serialNumber" id="" placeholder="Número de Serie">
-			</div>
+<label for="">Número de Serie:</label>
+	<input class="form-control" type="int" name="serialNumber" id="" placeholder="Número de Serie">
+		</div>
 
 <div class="form-group col-md-3">
-	<label for="">Matricula:</label>
-		<input class="form-control" type="text" name="matricule" id="" placeholder="Matricula">
+	<label for="">Matrícula:</label>
+		<input class="form-control" type="text" name="matricule" id="" placeholder="Matrícula">
 			<br>
 
 		
@@ -70,20 +74,21 @@
 		<br>
 
 <label for="">Disponibilidad:</label>
-	<input class="form-control" type="text" name="available" id="" placeholder="Disponibilidad">
+	<input class="form-control" type="number" name="available" id="" placeholder="Disponibilidad">
 		<br>
 		</div>
 
 
 <div class="col-6"></div>
 	<div class="form-group col-md-2">
-		<input class="form-control btn btn-primary" type="submit" name="Enviar">
+		<input class="form-control btn btn-primary" type="submit" value="Guardar">
 			</div>
 
 <div class="form-group col-md-2">
-	<input class="form-control btn btn-danger" type="reset" name="Restablecer">
+	<input class="form-control btn btn-danger" type="reset" value="Restablecer">
 		</div>
 	</div>
 </form>
 </body>
 </div>
+@endsection

@@ -1,4 +1,6 @@
-<link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">
+@extends('layout.layout')
+@extends('layout.nav')
+@section('content')
 
 <!DOCTYPE html>
 <html>
@@ -9,6 +11,7 @@
 <div class="col-12">
 	<body>
 		<form action="{{ route('parts.store') }}" method="post">
+			@csrf
 			<div align="center">
 				<h4>Industria Automotriz Faurecia</h4>
 					<h5>Registrar Autoparte</h5>
@@ -17,7 +20,7 @@
 <br>
 <div class="form-group row">
 	<div class="col-2"></div>
-		<div class="form-group col-md-4">
+		<div class="form-group col-md-3">
 			<label for="">Nombre:</label>
 				<input class="form-control" type="text" name="Name" id="" placeholder="Nombre">
 					<br>
@@ -28,22 +31,28 @@
 		<br>
 
 	
-<label for="">Tipo:</label>
-	<input class="form-control" type="text" name="Kind" id="" placeholder="Tipo">
+<label for="">Modelo:</label>
+	<input class="form-control" type="text" name="Model" id="" placeholder="Modelo">
 		</div>
 
-<div class="form-group col-md-4">	
-	<label for="">Descripción:</label>
-		<input class="form-control" type="text" name="Description" id="" placeholder="Descripción">
+<div class="form-group col-md-3">
+	<label for="">Precio:</label>
+		<input class="form-control" type="text" name="Price" id="" placeholder="Precio">
+	<br>
+
+
+<label for="">Descripción:</label>
+	<input class="form-control" type="text" name="Description" id="" placeholder="Descripción">
 		<br>
 
 <label for="">Comentario:</label>
 	<input class="form-control" type="text" name="Comentary" id="" placeholder="Comentario">
-		<br>
+			<br>
+		</div>
 
-<label for="">Disponible:</label>
-	<input class="form-control" type="text" name="Available" id="" placeholder="Disponiblee">
-		<br>
+<div class="form-group col-md-3">
+	<label for="">Disponible:</label>
+		<input class="form-control" type="number" name="Available" id="" placeholder="Disponiblee">
 			</div>
 
 <div class="col-6"></div>
@@ -58,3 +67,4 @@
 </form>
 </body>
 </div>
+@endsection

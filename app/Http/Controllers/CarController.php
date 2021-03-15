@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
 
 class CarController extends Controller
 {
@@ -15,8 +15,8 @@ class CarController extends Controller
      */
     public function index()
     {
-        $coches = Car::all();
-        return view('cars.index', compact('coches'));
+        $cars = DB::table('cars')->paginate(5);
+        return view('cars.index', compact('cars'));
     }
 
     /**
@@ -37,9 +37,8 @@ class CarController extends Controller
      */
     public function store(Request $request)
     {
-        $car = request()->except('_token');
-        Car::insert($car);
-        return view('cars.index');
+        Car::create($request->all());
+        return redirect()->route('cars.index');
     }
 
     /**
@@ -81,6 +80,9 @@ class CarController extends Controller
             'serialNumber'=> 'required',
             'matricule'=> 'required',
             'numberDoors'=> 'required',
+            'numberChair'=> 'required',
+            'numberDoors'=> 'required',
+            'mileage'=> 'required',
             'numberCylenders'=> 'required',
             'description'=> 'required',
             'comentary'=> 'required',

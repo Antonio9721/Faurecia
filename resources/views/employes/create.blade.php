@@ -1,4 +1,6 @@
-<link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">
+@extends('layout.layout')
+@extends('layout.nav')
+@section('content')
 
 <!DOCTYPE html>
 <html>
@@ -9,6 +11,7 @@
 <div class="col-12">
 	<body>
 		<form action="{{ route('employes.store') }}" method="post">
+			@csrf
 			<div align="center">
 				<h4>Industria Automotriz Faurecia</h4>
 					<h5>Registrar Empleado</h5>
@@ -66,3 +69,4 @@
 </form>
 </body>
 </div>
+@endsection

@@ -19,7 +19,7 @@ class CreateCarsTable extends Migration
             $table->string('model', 50);
             $table->string('color', 50)->nullable();
             $table->string('serialNumber', 50);
-            $table->tinyInteger('matricule')->nullable();
+            $table->string('matricule')->nullable();
             $table->tinyInteger('numberDoors');
             $table->tinyInteger('numberChair');
             $table->integer('mileage');

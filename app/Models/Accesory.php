@@ -11,9 +11,12 @@ class Accesory extends Model
 
     protected $fillable = [
     	'Name',
-    	'Kind',
+    	'Model',
+    	'Numserie',
     	'Price',
     	'State',
+    	'Comentary',
+    	'Available',
     	'Date',
     	'Time'
     ];

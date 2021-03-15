@@ -18,9 +18,10 @@ class CreateEmployesTable extends Migration
             $table->string('Firstname', 45);
             $table->string('Secondname', 45);
             $table->string('Area', 50);
+            $table->string('Salary', 50);
             $table->string('Keycode', 10);
             $table->string('Email', 35);
-            $table->integer('Phone');
+            $table->text('Phone');
             $table->timestamps();
         });
     }
