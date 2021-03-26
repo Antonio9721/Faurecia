@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Part;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade as PDF;
+//use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PartsExport;
 
 class PartController extends Controller
 {
@@ -76,13 +79,16 @@ class PartController extends Controller
             [
             'Name' => 'required',
             'Mark' => 'required',
-            'Kind' => 'required',
-            'Description' => 'required'
+            'Model' => 'required',
+            'Price' => 'required',
+            'Description' => 'required',
+            'Comentary' => 'required',
+            'Available' => 'required'
                 ]
     );
-        $accesory->update($request->all());
+        $part->update($request->all());
 
-        return redirect()->route('accesories.index');
+        return redirect()->route('parts.index');
     }
 
     /**
@@ -96,4 +102,52 @@ class PartController extends Controller
         $part->delete();
         return redirect()->route('parts.index');
     }
+
+    public function exportToPDF()
+    {
+        $parts = Part::get();
+           $pdf = PDF::loadView('parts.exportToPDF', compact('parts'));
+           return $pdf->download('ListadoAutopartes.pdf');
+       }
+
+       public function exportToXls()
+       {
+        return Excel::download(new PartsExport, 'parts.xlsx');
+
+       }
+
+       public function exportToCsv()
+       {
+       $fileName   = 'parts.csv';
+         $parts = Parts::all();
+
+        $headers = array(
+            "Content-type"         => "text/csv",
+            "Content-Disposition"  => "attachment; fileName=$fileName",
+            "Pragma"               => "no-cache",
+            "Cache-Control"        => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"              => "0"
+        );
+
+        $columns = array('Nombre', 'Marca', 'Modelo', 'Precio', 'Descripción', 'Comentario', 'Disponibilidad');
+
+        $callback = function() use($parts, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach($parts as $part) {
+                $row['Name']          = $part->Name;
+                $row['Mark']          = $part->Mark;
+                $row['Model']         = $part->Model;
+                $row['Price']         = $part->Price;
+                $row['Description']   = $part->Description;
+                $row['Comentary']     = $part->Comentary;
+                $row['Available']     = $part->Available;
+
+                fputcsv($file, array($row['Name'], $row['Mark'], $row['Model'], $row['Price'], $row['Description'], $row['Comentary'], $row['Available']));
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+       }
 }

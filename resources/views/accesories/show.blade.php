@@ -1,10 +1,9 @@
-@extends('layout.layout')
-@extends('layout.nav')
+@extends('layout.footer')
+@extends('layouts.plantilla')
 @section('content')
 
 <center>
-   <div class="col-sn-10"><h4>Industria Automotriz Faurecia</h4></div>
-  <div class="col-sn-10"><h5>Información del Accesorio</h5></div>
+  <div class="col-sn-10"><h4>Información del Accesorio</h4></div>
   </center>
 
 
@@ -16,7 +15,7 @@
 <br>
 
 <div class="card text-center">
-  <div class="card-header bg-info">
+  <div class="card-header bg-primary">
      <h5>{{ $accesory->Name }} {{ $accesory->Model }}</h5>
   </div>
 
@@ -56,5 +55,5 @@
   <div class="card-footer text-muted">
     <b>Última Edición: 12 de Marzo de 2021</b>
 </div>
-
+<br>
 @endsection

@@ -16,10 +16,10 @@
     <a class="navbar-brand"  href="{{ url('/home') }}">Faurecia México</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link disabled" href="{{ route('login') }}">Iniciar Sesión</a>
+    <a class="navbar-brand" href="{{ route('login') }}">Iniciar Sesión</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link disabled" href="{{ route('register') }}">Rigistrarse</a>
+    <a class="navbar-brand" href="{{ route('register') }}">Rigistrarse</a>
   </li>
 </ul>
 </nav>

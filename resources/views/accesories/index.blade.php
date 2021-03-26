@@ -1,13 +1,12 @@
-@extends('layout.layout')
-@extends('layout.nav')
+@extends('layout.footer')
+@extends('layouts.plantilla')
+
 @section('content')
 
-
 <div class="container">
-	<center><h4>Proveedor Mundial de Automóviles</h4></center>
-	<center><h5>"Faurecia México"</h5></center>
+	
 <div class="card">
-  <div class="card-header bg-success">
+  <div class="card-header bg-primary">
   	<div class="row">
   		<div class="col-md-8">
   			<center>
@@ -16,7 +15,8 @@
     	</div>
     	<div class="col-md-4">
     		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    			<a class="btn btn-primary" href="{{ route('accesories.create') }}">+ Nuevo</a>
+    			<span onclick="exportToCsv(event.target)" data-href="/exportToCsv" id="export" class="btn btn-secondary">Exportar a CSV</span>
+    			<a class="btn btn-success" href="{{ route('accesories.create') }}"><b>+ Nuevo</b></a>
      			</div>
      		</div>
   		</div>
@@ -25,9 +25,9 @@
 		<div class="card-body">
   			<table class="table table-hover">
 						<tr>
-							<th>Nombre</th>
+							<th>Accesorio</th>
 							<th>Información</th>
-							<th>Detalles</th>
+							<th>Destalles</th>
 							<th>Acciones</th>
 							
 						</tr>
@@ -44,25 +44,27 @@
 
 								<td>
 									<p> <b>Precio:</b> <?=$accesory->Price ?></p>
-									<p> <b>Estado:</b> <?=$accesory->State ?></p>
-									<p> <b>Comentario:</b> <?=$accesory->Comentary ?></p>
+									<p> <b>Fecha de Adquisición:</b> <?=$accesory->Date ?></p>
+									<p> <b>Hora de Adquisición:</b> <?=$accesory->Time ?></p>
 								</td>
 
 								<td>
+									<p> <b>Estado:</b> <?=$accesory->State ?></p>
 									<p> <b>Disponible:</b> <?=$accesory->Available ?></p>
-									<p> <b>Fecha:</b> <?=$accesory->Date ?></p>
-									<p> <b>Hora:</b> <?=$accesory->Time ?></p>
-									
-								</td>
+									<p> <b>Comentario:</b> <?=$accesory->Comentary ?></p>
+
+								</td>	
+
+							
 								
 			
 								<td> 
 								<form action="{{ route('accesories.destroy', $accesory->id) }}" method="post">
-      									<a type="submit" class="btn btn-info" href="{{ route('accesories.show', $accesory->id) }}">Ver</a>
-      									<a type="submit" class="btn btn-success" href="{{ route('accesories.edit', $accesory->id) }}">Editar</a>
+      									<a type="submit" class="btn btn-danger" href="{{ route('accesories.show', $accesory->id) }}">Consultar</a>
+      									<!-- <a type="submit" class="btn btn-success" href="{{ route('accesories.edit', $accesory->id) }}">Editar</a>
        									@csrf
       									@method('DELETE')
-      									<button type="submit" class="btn btn-danger">Eliminar</button>
+      									<button type="submit" class="btn btn-danger">Eliminar</button> -->
     								</form> 
 								</div>
 							</td>
@@ -92,5 +94,13 @@
 	}
 </script>
 </html>
+<br>
+
+<script>
+	function exportToCsv(_this){
+		let _url = $(_this) data('href');
+		window.location.href = _url;
+	}
+</script>
 
 @endsection

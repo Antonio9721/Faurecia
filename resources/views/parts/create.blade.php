@@ -1,59 +1,51 @@
-@extends('layout.layout')
-@extends('layout.nav')
+@extends('layout.footer')
+@extends('layouts.plantilla')
 @section('content')
 
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Registro de Autopartes</title>
-</head>
 
 <div class="col-12">
 	<body>
-		<form action="{{ route('parts.store') }}" method="post">
-			@csrf
-			<div align="center">
-				<h4>Industria Automotriz Faurecia</h4>
-					<h5>Registrar Autoparte</h5>
-						</div>
+	<form action="{{ route('parts.store') }}" method="post">
+		@csrf
+		<div align="center">
+			<h4>Industria Automotriz Faurecia</h4>
+			<h5>Registrar Autoparte</h5>
+		</div>
 
 <br>
 <div class="form-group row">
 	<div class="col-2"></div>
-		<div class="form-group col-md-3">
-			<label for="">Nombre:</label>
-				<input class="form-control" type="text" name="Name" id="" placeholder="Nombre">
-					<br>
+	<div class="form-group col-md-3">
+	<label for="">Nombre:</label>
+	<input class="form-control" type="text" name="Name" id="" placeholder="Nombre" required="">
+<br>
 
 		
 <label for="">Marca:</label>
-	<input class="form-control" type="text" name="Mark" id="" placeholder="Marca">
-		<br>
-
+	<input class="form-control" type="text" name="Mark" id="" placeholder="Marca" required="">
+<br>
 	
 <label for="">Modelo:</label>
-	<input class="form-control" type="text" name="Model" id="" placeholder="Modelo">
-		</div>
+	<input class="form-control" type="text" name="Model" id="" placeholder="Modelo" required="">
+</div>
 
 <div class="form-group col-md-3">
 	<label for="">Precio:</label>
-		<input class="form-control" type="text" name="Price" id="" placeholder="Precio">
-	<br>
-
+	<input class="form-control" type="text" name="Price" id="" placeholder="Precio" required="">
+<br>
 
 <label for="">Descripción:</label>
-	<input class="form-control" type="text" name="Description" id="" placeholder="Descripción">
-		<br>
-
-<label for="">Comentario:</label>
-	<input class="form-control" type="text" name="Comentary" id="" placeholder="Comentario">
-			<br>
-		</div>
+	<textarea class="form-control" name="Description" id="" cols="30" rows="5"></textarea>
+</div>
 
 <div class="form-group col-md-3">
-	<label for="">Disponible:</label>
-		<input class="form-control" type="number" name="Available" id="" placeholder="Disponiblee">
-			</div>
+	<label for="">Comentario:</label>
+	<textarea class="form-control" name="Comentary" id="" cols="30" rows="5"></textarea>
+<br>
+
+<label for="">Disponible:</label>
+	<input class="form-control" type="number" name="Available" id="" placeholder="Disponible" required="">
+</div>
 
 <div class="col-6"></div>
 	<div class="form-group col-md-2">
@@ -61,7 +53,7 @@
 			</div>
 
 <div class="form-group col-md-2">
-	<input class="form-control btn btn-danger" type="reset" name="Restablecer">
+	<input class="form-control btn btn-warning" type="reset" name="Restablecer">
 		</div>
 	</div>
 </form>

@@ -22,7 +22,13 @@ class PartFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'Name'        => $this->faker->word,
+            'Mark'        => $this->faker->word,
+            'Model'       => $this->faker->word,
+            'Price'       => $this->faker->word,
+            'Description' => $this->faker->text($maxNbChars = 200),
+            'Comentary'   => $this->faker->text($maxNbChars = 100), 
+            'Available'   => $this->faker->randomDigitNot(2,3,4,5,6,7,8,9),
         ];
     }
 }

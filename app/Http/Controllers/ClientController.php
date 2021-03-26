@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade as PDF;
+//use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ClientsExport;
 
 class ClientController extends Controller
 {
@@ -101,4 +104,54 @@ class ClientController extends Controller
         $client->delete();
         return redirect()->route('clients.index');
     }
+
+    public function exportToPDF()
+    {
+           $clients = Client::get();
+           $pdf = PDF::loadView('clients.exportToPDF', compact('clients'));
+           return $pdf->download('ListadoClientes.pdf');
+       }
+
+       public function exportToXls()
+       {
+        return Excel::download(new ClientsExport, 'clients.xlsx');
+
+       }
+
+       public function exportToCsv()
+       {
+        $fileName   = 'clients.csv';
+        $clients = Clients::all();
+
+        $headers = array(
+            "Content-type"         => "text/csv",
+            "Content-Disposition"  => "attachment; fileName=$fileName",
+            "Pragma"               => "no-cache",
+            "Cache-Control"        => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"              => "0"
+        );
+
+        $columns = array('Nombre', 'Apellidos', 'Dirección', 'Empleo', 'Salario', 'Banco', 'Número de Cuenta', 'Número Teléfonico', 'Correo Electrónico');
+
+        $callback = function() use($clients, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach($clients as $client) {
+                $row['Firstname']    = $client->Firstname;
+                $row['Secondname']   = $client->Secondname;
+                $row['Address']      = $client->Address;
+                $row['Job']          = $client->Job;
+                $row['Salary']       = $client->Salary;
+                $row['Bank']         = $client->Bank;
+                $row['Numcount']     = $client->Numcount;
+                $row['Phone']        = $client->Phone;
+                $row['Email']        = $client->Email;
+
+                fputcsv($file, array($row['Firstname'], $row['Secondname'], $row['Address'], $row['Job'], $row['Salary'], $row['Bank'], $row['Numcount'], $row['Phone'], $row['Email']));
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+       }
 }

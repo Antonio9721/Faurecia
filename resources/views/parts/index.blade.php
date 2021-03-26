@@ -1,13 +1,12 @@
-@extends('layout.layout')
-@extends('layout.nav')
+@extends('layout.footer')
+@extends('layouts.plantilla')
 @section('content')
 
 
 <div class="container">
-	<center><h4>Proveedor Mundial de Automóviles</h4></center>
-	<center><h5>"Faurecia México"</h5></center>
+	<center><h4>"Faurecia México"</h4></center>
 <div class="card">
-  <div class="card-header bg-success">
+  <div class="card-header bg-primary">
   	<div class="row">
   		<div class="col-md-8">
   			<center>
@@ -16,7 +15,8 @@
     	</div>
     	<div class="col-md-4">
     		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    			<a class="btn btn-primary" href="{{ route('parts.create') }}">+ Nuevo</a>
+    			<span onclick="exportToCsv(event.target)" data-href="/exportToCsv" id="export" class="btn btn-secondary">Exportar a CSV</span>
+    			<a class="btn btn-success" href="{{ route('parts.create') }}"><b>+ Nuevo</b></a>
      			</div>
      		</div>
   		</div>
@@ -54,11 +54,11 @@
 
 									<td>
 										<form action="{{ route('parts.destroy', $part->id) }}" method="post">
-      									<a type="submit" class="btn btn-info" href="{{ route('parts.show', $part->id) }}">Ver</a>
-      									<a type="submit" class="btn btn-success" href="{{ route('parts.edit', $part->id) }}">Editar</a>
+      									<a type="submit" class="btn btn-danger" href="{{ route('parts.show', $part->id) }}">Consultar</a>
+      									<!-- <a type="submit" class="btn btn-success" href="{{ route('parts.edit', $part->id) }}">Editar</a>
        									@csrf
       									@method('DELETE')
-      									<button type="submit" class="btn btn-danger">Eliminar</button>
+      									<button type="submit" class="btn btn-danger">Eliminar</button> -->
     								</form> 
 								</div>
 							</td>
@@ -86,4 +86,12 @@
 	}
 </script>
 </html>
+<br>
+
+<script>
+	function exportToCsv(_this){
+		let _url = $(_this) data('href');
+		window.location.href = _url;
+	}
+</script>
 @endsection

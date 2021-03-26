@@ -1,20 +1,25 @@
-@extends('layout.layout')
-@extends('layout.nav')
+@extends('layout.footer')
+@extends('layouts.plantilla')
 @section('content')
 
 
 <div class="container">
-	<center><h4>Proveedor Mundial de Automóviles</h4></center>
-	<center><h5>"Faurecia México"</h5></center>
+	<center><h4>"Faurecia México"</h4></center>
+	<div class="col-6">
+</div>
+
+  
+
 <div class="card">
-  <div class="card-header bg-success">
+  <div class="card-header bg-primary">
   	<div class="row">
   		<div class="col-md-8">
     		<h4 class="card-title"><center>Clientes Registrados en la Base de Datos</center></h4>
     	</div>
     	<div class="col-md-4">
     		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    			<a class="btn btn-primary" href="{{ route('clients.create') }}">+ Nuevo</a>
+    			<span onclick="exportToCsv(event.target)" data-href="/exportToCsv" id="export" class="btn btn-secondary">Exportar a CSV</span>
+    			<a class="btn btn-success" href="{{ route('clients.create') }}"><b>+ Nuevo</b></a>
      			</div>
      		</div>
   		</div>
@@ -23,7 +28,7 @@
 		<div class="card-body">
   			<table class="table table-hover">
 						<tr>
-							<th><h5>Nombre</h5></th>
+							<th><h5>Cliente</h5></th>
 							<th><h5>Información</h5></th>
 							<th><h5>Detalles</h5></th>
 							<th><h5>Acciones</h5></th>
@@ -53,11 +58,11 @@
 
 								<td> 
 								<form action="{{ route('clients.destroy', $client->id) }}" method="post">
-      									<a type="submit" class="btn btn-info" href="{{ route('clients.show', $client->id) }}">Ver</a>
-      									<a type="submit" class="btn btn-success" href="{{ route('clients.edit', $client->id) }}">Editar</a>
+      									<a type="submit" class="btn btn-danger" href="{{ route('clients.show', $client->id) }}">Consultar</a>
+      									<!-- <a type="submit" class="btn btn-success" href="{{ route('clients.edit', $client->id) }}">Editar</a>
        									@csrf
       									@method('DELETE')
-      									<button type="submit" class="btn btn-danger">Eliminar</button>
+      									<button type="submit" class="btn btn-danger">Eliminar</button> -->
     								</form> 
 								</div>
 							</td>
@@ -87,5 +92,12 @@
 	}
 </script>
 </html>
+<br>
 
+<script>
+	function exportToCsv(_this){
+		let _url = $(_this) data('href');
+		window.location.href = _url;
+	}
+</script>
 @endsection

@@ -22,7 +22,13 @@ class EmployeFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'Firstname'    => $this->faker->firstNameMale,
+            'Secondname'   => $this->faker->lastName,
+            'Area'         => $this->faker->jobTitle,
+            'Salary'       => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = NULL),
+            'Keycode'      => $this->faker->ean8,
+            'Email'        => $this->faker->freeEmail,
+            'Phone'        => $this->faker->phoneNumber,
         ];
     }
 }

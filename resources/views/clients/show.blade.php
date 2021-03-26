@@ -1,10 +1,9 @@
-@extends('layout.layout')
-@extends('layout.nav')
+@extends('layout.footer')
+@extends('layouts.plantilla')
 @section('content')
 
 <center>
-   <div class="col-sn-10"><h4>Industria Automotriz Faurecia</h4></div>
-  <div class="col-sn-10"><h5>Información del Cliente</h5></div>
+  <div class="col-sn-10"><h4>Información del Cliente</h4></div>
   </center>
 
 
@@ -57,5 +56,5 @@
     <b>Última Edición: 12 de Marzo de 2021</b>
   </div>
 </div>
-
+<br>
 @endsection

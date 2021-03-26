@@ -1,13 +1,12 @@
-@extends('layout.layout')
-@extends('layout.nav')
+@extends('layout.footer')
+@extends('layouts.plantilla')
 @section('content')
 
 
 <div class="container">
-	<center><h4>Proveedor Mundial de Automóviles</h4></center>
-	<center><h5>"Faurecia México"</h5></center>
+	<center><h4>"Faurecia México"</h4></center>
 <div class="card">
-  <div class="card-header bg-success">
+  <div class="card-header bg-primary">
   	<div class="row">
   		<div class="col-md-8">
   			<center>
@@ -16,7 +15,8 @@
     	</div>
     	<div class="col-md-4">
     		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    			<a class="btn btn-primary" href="{{ route('employes.create') }}">+ Nuevo</a>
+    			<span onclick="exportToCsv(event.target)" data-href="/exportToCsv" id="export" class="btn btn-secondary">Exportar a CSV</span>
+    			<a class="btn btn-success" href="{{ route('employes.create') }}"><b>+ Nuevo</b></a>
      			</div>
      		</div>
   		</div>
@@ -25,10 +25,10 @@
 		<div class="card-body">
   			<table class="table table-hover">
 						<tr>
-							<th><h5>Nombre</h5></th>
+							<th><h5>Empleado</h5></th>
 							<th><h5>Información</h5></th>
 							<th><h5>Detalles</h5></th>
-							<th><h5>Acciones</h5></th>
+							<th><h5>Consultar</h5></th>
 						</tr>
 					</thead>
 
@@ -37,8 +37,8 @@
 						<?php foreach ($employes as $employe):?>
 							<tr>
 								<td>
-									<p> <?=$employe->Firstname ?></p>
-									<p> <?=$employe->Secondname ?></p>
+									<p> <b>Nombre:</b> <?=$employe->Firstname ?></p>
+									<p> <b>Apellidos:</b> <?=$employe->Secondname ?></p>
 								</td>
 
 								<td>
@@ -54,11 +54,11 @@
 			
 							<td> 
 								<form action="{{ route('employes.destroy', $employe->id) }}" method="post">
-      									<a type="submit" class="btn btn-info" href="{{ route('employes.show', $employe->id) }}">Ver</a>
-      									<a type="submit" class="btn btn-success" href="{{ route('employes.edit', $employe->id) }}">Editar</a>
+      									<a type="submit" class="btn btn-danger" href="{{ route('employes.show', $employe->id) }}">Consultar</a>
+      									<!-- <a type="submit" class="btn btn-success" href="{{ route('employes.edit', $employe->id) }}">Editar</a>
        									@csrf
       									@method('DELETE')
-      									<button type="submit" class="btn btn-danger">Eliminar</button>
+      									<button type="submit" class="btn btn-danger">Eliminar</button> -->
     								</form> 
 								</div>
 							</td>
@@ -89,4 +89,12 @@
 	}
 </script>
 </html>
+<br>
+
+<script>
+	function exportToCsv(_this){
+		let _url = $(_this) data('href');
+		window.location.href = _url;
+	}
+</script>
 @endsection

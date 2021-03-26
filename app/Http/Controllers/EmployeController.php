@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Employe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade as PDF;
+//use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\EmployesExport;
 
 class EmployeController extends Controller
 {
@@ -100,4 +103,52 @@ class EmployeController extends Controller
         $employe->delete();
         return redirect()->route('employes.index');
     }
+
+    public function exportToPDF()
+    {
+        $employes = Employe::get();
+           $pdf = PDF::loadView('employes.exportToPDF', compact('employes'));
+           return $pdf->download('ListadoEmpleados.pdf');
+       }
+
+       public function exportToXls()
+       {
+        return Excel::download(new EmployesExport, 'employes.xlsx');
+
+       }
+
+       public function exportToCsv()
+       {
+         $fileName   = 'employes.csv';
+         $employes = Employes::all();
+
+        $headers = array(
+            "Content-type"         => "text/csv",
+            "Content-Disposition"  => "attachment; fileName=$fileName",
+            "Pragma"               => "no-cache",
+            "Cache-Control"        => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"              => "0"
+        );
+
+        $columns = array('Nombre', 'Apellidos', 'Área de Trabajo', 'Salario', 'Clave', 'Correo Electrónico', 'Número Teléfonico');
+
+        $callback = function() use($employes, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach($employes as $employe) {
+                $row['Firstname']    = $employe->Firstname;
+                $row['Secondname']   = $employe->Secondname;
+                $row['Area']         = $employe->Area;
+                $row['Salary']       = $employe->Salary;
+                $row['Keycode']      = $employe->Keycode;
+                $row['Email']        = $employe->Email;
+                $row['Phone']        = $employe->Phone;
+
+                fputcsv($file, array($row['Firstname'], $row['Secondname'], $row['Area'], $row['Salary'], $row['Keycode'], $row['Email'], $row['Phone']));
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+       }
 }

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Car;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade as PDF;
+//use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CarsExport;
 
 class CarController extends Controller
 {
@@ -105,4 +108,56 @@ class CarController extends Controller
         $car->delete();
         return redirect()->route('cars.index');
     }
+
+    public function exportToPDF()
+    {
+        $cars = Car::get();
+           $pdf = PDF::loadView('cars.exportToPDF', compact('cars'));
+           return $pdf->download('ListadoCarros.pdf');
+       }
+
+       public function exportToXls()
+       {
+        return Excel::download(new CarsExport, 'cars.xlsx');
+
+       }
+
+       public function exportToCsv()
+       {
+        $fileName   = 'cars.csv';
+         $cars = Cars::all();
+
+        $headers = array(
+            "Content-type"         => "text/csv",
+            "Content-Disposition"  => "attachment; fileName=$fileName",
+            "Pragma"               => "no-cache",
+            "Cache-Control"        => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"              => "0"
+        );
+
+        $columns = array('Marca', 'Modelo', 'Color', 'Número de Serie', 'Matricula', 'Puertas', 'Asientos', 'Kilometraje', 'Cilindros', 'Descripción', 'Comentario', 'Disponibilidad');
+
+        $callback = function() use($cars, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach($cars as $car) {
+                $row['brand']            = $car->brand;
+                $row['model']            = $car->model;
+                $row['serialNumber']     = $car->serialNumber;
+                $row['matricule']        = $car->matricule;
+                $row['numberDoors']      = $car->numberDoors;
+                $row['numberChair']      = $car->numberChair;
+                $row['mileage']          = $car->mileage;
+                $row['numberCylenders']  = $car->numberCylenders;
+                $row['description']      = $car->description;
+                $row['comentary']        = $car->comentary;
+                $row['available']        = $car->available;
+
+                fputcsv($file, array($row['brand'], $row['model'], $row['serialNumber'], $row['matricule'], $row['numberDoors'], $row['numberChair'], $row['mileage'], $row['numberCylenders'], $row['description'], $row['comentary'], $row['available']));
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+       }
 }
