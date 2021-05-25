@@ -1,97 +1,94 @@
-@extends('layout.footer')
 @extends('layouts.plantilla')
+@section('title', 'Autopartes')
+
 @section('content')
 
+<div class="">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-1">
+                    <a class="btn btn-outline-info" href="{{ route('parts.create') }}"><i class="fas fa-plus-circle"></i></a>
+                </div>
+                <div class="col-md-7">
+                    <h2 class="card-title">Listado de autopartes registradas en la base de datos</h2>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/parts/import') }}"><i class="fas fa-file-import"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/parts/cards') }}"><i class="fas fa-border-all"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/parts/chart') }}"><i class="fas fa-chart-bar"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/parts/exportToXlsx') }}"><i class="fas fa-file-excel"></i></a>
+                         <span onclick="exportPartsToCSV(event.target)" data-href="/exportPartsToCSV" id="export" class="btn btn-outline-info mr-2"><i class="fas fa-file-csv"></i></span>
+                        <a class="btn btn-outline-info mr-2" href="{{ route('parts.pdf') }}"><i class="fas fa-file-pdf"></i></a> 
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/parts/xml') }}"><i class="fas fa-file-code"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
 
-<div class="container">
-	<center><h4>"Faurecia México"</h4></center>
-<div class="card">
-  <div class="card-header bg-primary">
-  	<div class="row">
-  		<div class="col-md-8">
-  			<center>
-    		<h4 class="card-title">Autopartes Registradas en la Base de Datos</h4>
-    		</center>
-    	</div>
-    	<div class="col-md-4">
-    		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    			<span onclick="exportToCsv(event.target)" data-href="/exportToCsv" id="export" class="btn btn-secondary">Exportar a CSV</span>
-    			<a class="btn btn-success" href="{{ route('parts.create') }}"><b>+ Nuevo</b></a>
-     			</div>
-     		</div>
-  		</div>
-  </div>
-	
-		<div class="card-body">
-  			<table class="table table-hover">
-						<tr>
-   						    <th><h5>Autoparte</h5></th>
-							<th><h5>Información</h5></th>
-							<th><h5>Detalles</h5></th>
-							<th><h5>Acciones</h5></th>
-						</tr>							
-						
-					</thead>
+            <table id="example" class="table table-striped table-responsive">
 
-					<tbody>
-						<?php foreach ($parts as $part):?>
-							<tr>
-								<td>
-									<p> <b>Nombre:</b> <?=$part->Name ?></p>
-									<p> <b>Marca: </b> <?=$part->Mark ?></p>
-								</td>
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Autoparte</th>
+                        <th>Descripción</th>
+                        <th>Comentario</th>
 
-								<td>
-									<p> <b>Modelo: </b> <?=$part->Model ?></p>
-									<p> <b>Descripción: </b> <?=$part->Description ?></p>
-									<p> <b>Price: </b> <?=$part->Price ?> </p>
-								</td>
+                    </tr>
 
-								<td>
-									<p> <b>Comentario: </b> <?=$part->Comentary ?></p>
-									<p> <b>Disponible: </b> <?=$part->Available ?></p>
-									</td>
+                </thead>
 
-									<td>
-										<form action="{{ route('parts.destroy', $part->id) }}" method="post">
-      									<a type="submit" class="btn btn-danger" href="{{ route('parts.show', $part->id) }}">Consultar</a>
-      									<!-- <a type="submit" class="btn btn-success" href="{{ route('parts.edit', $part->id) }}">Editar</a>
-       									@csrf
-      									@method('DELETE')
-      									<button type="submit" class="btn btn-danger">Eliminar</button> -->
-    								</form> 
-								</div>
-							</td>
-						</tr>								
-						<?php endforeach ?>
-					</tbody> 
-	</table>
-</div>
+                <tbody>
+                    @forelse ($parts as $part)
+                    <tr>
+                        <td>
+                            <img style="width: 200px; height: 100; object-fit: cover" src="/imagenes/parts/{{ $part->image }}" alt="{{ $part->Name }} {{ $part->Mark}}" />
+                        </td>
+                        <td style="width: 20%">
+                            <a href="{{ route('parts.show', $part->id) }}">
+                                <h4 class="text-left"> <span class="badge bg-info">{{ $part->Name }} {{ $part->Mark }}</span></h4></td>
+                            </a>
+                        <td style="width: 25%">
+                            <p>{{ $part->Description }}</p>
+                            </p>
+                        </td>
+                        <td style="width: 25%"><p>{{ $part->Comentary }}</p></td>
+
+                    @empty
+                        <h1>La tabla no tiene datos</h1>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+      </div>
 </div>
 
-<script type="text/javascript">
-	function Edition() {
-		if (confirm("¿Desea Editar este Registro?")) {
-			return true;
-		}else{
-			return false;
-		}
-	}
-	function Delete(){
-		if (confirm("¿Desea Eliminar este Registro?")) {
-			return true;
-		}else{
-			return false;
-		}
-	}
+
+<!-- DataTables -->
+<script src="{{ asset('assets/js/jquery-3.5.1.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
+
+<!-- Aplicación de DataTable -->
+<script>
+    $(function() {
+        $('#example').DataTable({
+            dom:'Blfrtip',
+            buttons:[
+            'pdf', 'print'
+            ],
+        });
+    } );
 </script>
-</html>
-<br>
 
 <script>
-	function exportToCsv(_this){
-		let _url = $(_this) data('href');
-		window.location.href = _url;
-	}
+    function exportPartsToCSV(_this) {
+        let _url = $(_this).data('href');
+        window.location.href = _url;
+    }
 </script>
+
 @endsection

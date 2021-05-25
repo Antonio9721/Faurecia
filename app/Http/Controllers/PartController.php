@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Part;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade as PDF;
-//use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\PartsExport;
+use App\Exports\PartExport;
+use App\Imports\PartsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PartController extends Controller
 {
@@ -18,8 +18,8 @@ class PartController extends Controller
      */
     public function index()
     {
-        $parts = DB::table('parts')->paginate(5);
-        return view('parts.index', compact('parts'));
+        $parts = Part::all();
+        return view ('parts.index', compact('parts'));
     }
 
     /**
@@ -40,8 +40,19 @@ class PartController extends Controller
      */
     public function store(Request $request)
     {
-        Part::create($request->all());
-        return redirect()->route('parts.index');
+        $part = $request->all();
+        if ($img = $request->file('image')){
+            $destinationPath = 'imagenes/parts/';
+            $name = date('YmdHis') . "." .
+            $img->getClientOriginalExtension();
+            $img->move($destinationPath, $name);
+            $part['image'] = "$name";
+        }
+
+        Part::create($part);
+
+        return redirect()->to(url('/parts'));
+
     }
 
     /**
@@ -75,20 +86,9 @@ class PartController extends Controller
      */
     public function update(Request $request, Part $part)
     {
-        $request->validate(
-            [
-            'Name' => 'required',
-            'Mark' => 'required',
-            'Model' => 'required',
-            'Price' => 'required',
-            'Description' => 'required',
-            'Comentary' => 'required',
-            'Available' => 'required'
-                ]
-    );
-        $part->update($request->all());
-
-        return redirect()->route('parts.index');
+        $dataPart = request()->except('_token');
+        $part->update($dataPart);
+        return redirect()->to(url('/parts'));
     }
 
     /**
@@ -100,26 +100,13 @@ class PartController extends Controller
     public function destroy(Part $part)
     {
         $part->delete();
-        return redirect()->route('parts.index');
+        return redirect()->to(url('/parts'));
     }
 
-    public function exportToPDF()
-    {
-        $parts = Part::get();
-           $pdf = PDF::loadView('parts.exportToPDF', compact('parts'));
-           return $pdf->download('ListadoAutopartes.pdf');
-       }
 
-       public function exportToXls()
-       {
-        return Excel::download(new PartsExport, 'parts.xlsx');
-
-       }
-
-       public function exportToCsv()
-       {
+     public function exportPartsToCSV(Request $request){
        $fileName   = 'parts.csv';
-         $parts = Parts::all();
+       $parts = Part::all();
 
         $headers = array(
             "Content-type"         => "text/csv",
@@ -150,4 +137,53 @@ class PartController extends Controller
         };
         return response()->stream($callback, 200, $headers);
        }
+
+    public function chart() {
+
+        $parts = Part::select(\DB::raw("COUNT(*) as count"))
+            ->whereYear('created_at', date('Y'))
+            ->groupBy(\DB::raw("Second(created_at)"))
+            ->pluck('count');
+
+        $parts2 = Part::select(\DB::raw("COUNT(*) as count"))
+        ->whereBetween('Price', ([2, 5]))
+        ->groupBy(\DB::raw("Price"))
+        ->pluck('count');
+
+        return view ('parts.chart')
+            ->with('parts', $parts)
+            ->with('parts2', $parts2);
+    }
+
+    public function cards(){
+        $parts = Part::all();
+        return view('parts.cards', compact('parts'));
+    }
+
+    public function exportToXlsx() {
+        return Excel::download(new PartExport, 'parts.xlsx');
+    }
+
+    public function import() {
+        return view('parts.import');
+    }
+
+    public function importData(Request $request) {
+        Excel::import(new PartsImport, request()->file('excel'));
+        return redirect()->to(url('parts'));
+
+    }
+
+    public function exportXml() {
+        $parts = Part::all();
+        header("Content-type: text/xml");
+        echo ("<parts>");
+        foreach ($parts as $part) {
+            echo ("<nombre>" . $part['Name'] . "</nombre>" );
+            echo ("<marca>" . $part['Mark'] . "</marca>" );
+            echo ("<modelo>" . $part['Model'] . "</modelo>" );
+            echo ("<precio>" . $part['Price'] . "</precio>" );
+}
+echo ("</parts>");
+}
 }

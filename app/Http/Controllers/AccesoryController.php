@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Accesory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade as PDF;
-//use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\AccesoriesExport;
-
+use App\Exports\AccesoryExport;
+use App\Imports\AccesoriesImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AccesoryController extends Controller
 {
@@ -19,8 +18,8 @@ class AccesoryController extends Controller
      */
     public function index()
     {
-         $accesories = DB::table('accesories')->paginate(5);
-        return view('accesories.index', compact('accesories'));
+         $accesories = Accesory::all();
+        return view ('accesories.index', compact('accesories'));
     }
 
     /**
@@ -41,8 +40,19 @@ class AccesoryController extends Controller
      */
     public function store(Request $request)
     {
-        Accesory::create($request->all());
-        return redirect()->route('accesories.index');
+        $accesory = $request->all();
+        if ($img = $request->file('image')){
+            $destinationPath = 'imagenes/accesories/';
+            $name = date('YmdHis') . "." .
+            $img->getClientOriginalExtension();
+            $img->move($destinationPath, $name);
+            $accesory['image'] = "$name";
+        }
+
+        Accesory::create($accesory);
+
+        return redirect()->to(url('/accesories'));
+
     }
 
     /**
@@ -76,22 +86,9 @@ class AccesoryController extends Controller
      */
     public function update(Request $request, Accesory $accesory)
     {
-        $request->validate(
-            [
-            'Name' => 'required',
-            'Model' => 'required',
-            'Numserie' => 'required',
-            'Price' => 'required',
-            'State'=> 'required',
-            'Available' => 'required',
-            'Date'=> 'required',
-            'Time'=> 'required',
-            'Comentary' => 'required'
-                ]
-    );
-        $accesory->update($request->all());
-
-        return redirect()->route('accesories.index');
+       $dataAccesory = request()->except('_token');
+        $accesory->update($dataAccesory);
+        return redirect()->to(url('/accesories'));
     }
 
     /**
@@ -109,20 +106,13 @@ class AccesoryController extends Controller
     public function exportToPDF()
     {
         $accesories = Accesory::get();
-           $pdf = PDF::loadView('accesories.exportToPDF', compact('accesories'));
-           return $pdf->download('ListadoAccesorios.pdf');
-       }
+        $pdf = PDF::loadView('accesories.exportToPDF', compact('accesories'));
+        return $pdf->download('ListadoAccesorios.pdf');
+    }
 
-       public function exportToXls()
-       {
-        return Excel::download(new AccesoriesExport, 'accesories.xlsx');
-
-       }
-
-       public function exportToCsv()
-       {
+    public function exportAccesoriesToCSV(Request $request) {
         $fileName   = 'accesories.csv';
-        $accesories = Accesories::all();
+        $accesories = Accesory::all();
 
         $headers = array(
             "Content-type"         => "text/csv",
@@ -154,4 +144,53 @@ class AccesoryController extends Controller
         };
         return response()->stream($callback, 200, $headers);
        }
+
+    public function chart() {
+
+        $accesories = Accesory::select(\DB::raw("COUNT(*) as count"))
+            ->whereYear('created_at', date('Y'))
+            ->groupBy(\DB::raw("Second(created_at)"))
+            ->pluck('count');
+
+        $accesories2 = Accesory::select(\DB::raw("COUNT(*) as count"))
+        ->whereBetween('Model', ([2, 5]))
+        ->groupBy(\DB::raw("Model"))
+        ->pluck('count');
+
+        return view ('accesories.chart')
+            ->with('accesories', $accesories)
+            ->with('accesories2', $accesories2);
+    }
+
+    public function cards(){
+        $accesories = Accesory::all();
+        return view('accesories.cards', compact('accesories'));
+    }
+
+    public function exportToXlsx() {
+        return Excel::download(new AccesoryExport, 'accesories.xlsx');
+    }
+
+    public function import() {
+        return view('accesories.import');
+    }
+
+    public function importData(Request $request) {
+        Excel::import(new AccesoriesImport, request()->file('excel'));
+        return redirect()->to(url('accesories'));
+
+    }
+
+    public function exportXml() {
+        $accesories = Accesory::all();
+        header("Content-type: text/xml");
+        echo ("<accesories>");
+        foreach ($accesories as $accesory) {
+            echo ("<nombre>" . $accesory['Name'] . "</nombre>" );
+            echo ("<modelo>" . $accesory['Model'] . "</modelo>" );
+            echo ("<precio>" . $accesory['Price'] . "</precio>" );
+            echo ("<comentary>" . $accesory['Comentary'] . "</comentary>" );
+}
+echo ("</accesories>");
+}
 }

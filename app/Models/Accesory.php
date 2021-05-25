@@ -10,6 +10,7 @@ class Accesory extends Model
     use HasFactory;
 
     protected $fillable = [
+        'image',
     	'Name',
     	'Model',
     	'Numserie',

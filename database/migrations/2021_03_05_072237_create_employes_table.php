@@ -15,6 +15,7 @@ class CreateEmployesTable extends Migration
     {
         Schema::create('employes', function (Blueprint $table) {
             $table->id();
+            $table->string('image')->nullable();
             $table->string('Firstname', 45);
             $table->string('Secondname', 45);
             $table->string('Area', 50);

@@ -1,62 +1,71 @@
-@extends('layout.footer')
 @extends('layouts.plantilla')
+
 @section('content')
 
 
-<div class="col-12">
-	<body>
-		<form action="{{ route('employes.store') }}" method="post">
+<div class="container">
+	<h3>Actualizar datos del empleado <b>{{ $employe->Firstname }} {{ $employe->Secondname }}</b></h3>
+
+		<form action="{{ route('employes.update', $employe->id) }}" method="post">
+
 			@csrf
-		<div align="center">
-			<h4>Industria Automotriz Faurecia</h4>
-			<h5>Actualizar datos del empleado <b>{{ $employe->Firstname }} {{ $employe->Secondname }}</b></h5>
-		</div>
+			@method('PUT')
 
-<br>
-<div class="form-group row">
-	<div class="col-2"></div>
-	<div class="form-group col-md-3">
-	<label for="">Nombre:</label>
-	<input class="form-control" type="text" name="Firstname" value="{{ $employe->Firstname }}" required="">
-<br>
+			<input type="hidden" name="id">
 		
-<label for="">Apellidos:</label>
-	<input class="form-control" type="text" name="Secondname" value="{{ $employe->Secondname }}" required="">
-<br>
+	<div class="row">
+		<div class="col-xs-12 col-sm-4 col-md-4 col-xl-4">
+			<label for="">Nombre:</label>
+		<input class="form-control" type="text" name="Firstname" value="{{ 
+		$employe->Firstname }}" required="">
+	</div>
+
+	<div class="col-xs-12 col-sm-4 col-md-4 col-xl-4">		
+		<label for="">Apellidos:</label>
+		<input class="form-control" type="text" name="Secondname" value="{{ 
+		$employe->Secondname }}" required="">
+	</div>
 		
-<label for="">Área de Trabajo:</label>
-	<input class="form-control" type="text" name="Area" value="{{ $employe->Area }}" required="">
+	<div class="col-xs-12 col-sm-4 col-md-4 col-xl-4">
+		<label for="">Área de Trabajo:</label>
+		<input class="form-control" type="text" name="Area" value="{{ $employe->Area }}" required="">
+	</div>
 </div>
-
-<div class="form-group col-md-3">
-	<label for="">Salario Quincenal:</label>
-	<input class="form-control" type="text" name="Salary" value="{{ $employe->Salary }}" required="">
 <br>
 
-<label for="">Clave de Identificación:</label>
-	<input class="form-control" type="text" name="Keycode" value="{{ $employe->Keycode }}" required="">
-<br>
-		
-<label for="">Correo Elcetrónico:</label>
-	<input class="form-control" type="text" name="Email" value="{{ $employe->Email }}" required="">
+	<div class="row">
+		<div class="col-xs-12 col-sm-4 col-md-4 col-xl-4">
+			<label for="">Salario Quincenal:</label>
+			<input class="form-control" type="text" name="Salary" value="{{ $employe->Salary }}" required="">
+	</div>
+
+	<div class="col-xs-12 col-sm-4 col-md-4 col-xl-4">
+		<label for="">Clave de Identificación:</label>
+		<input class="form-control" type="text" name="Keycode" value="{{ $employe->Keycode }}" required="">
+	</div>
+
+	<div class="col-xs-12 col-sm-4 col-md-4 col-xl-4">	
+		<label for="">Correo Elcetrónico:</label>
+		<input class="form-control" type="text" name="Email" value="{{ $employe->Email }}" required="">
+	</div>
 </div>
+<br>
 		
-<div class="form-group col-md-3">		
+<div>		
 	<label for="">Número Teléfonico:</label>
 	<input class="form-control" type="int" name="Phone" value="{{ $employe->Phone }}" required="">
 </div>
+<br>
 
 
-<div class="col-6"></div>
-	<div class="form-group col-md-2">
-		<input class="form-control btn btn-primary" type="submit" name="Enviar">
-			</div>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <input class="btn btn-info" type="reset" value="Restablecer">
+            <input class="btn btn-primary" type="submit" value="Guardar">
+        </div>
 
-<div class="form-group col-md-2">
-	<input class="form-control btn btn-warning" type="reset" name="Restablecer">
-		</div>
-	</div>
-</form>
-</body>
+    </form>
+
 </div>
+
+
 @endsection

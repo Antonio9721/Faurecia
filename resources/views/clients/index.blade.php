@@ -1,103 +1,102 @@
-@extends('layout.footer')
 @extends('layouts.plantilla')
+
+@section('title', 'Clientes')
+
 @section('content')
 
+<div class="">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-1">
+                    <a class="btn btn-outline-info" href="{{ route('clients.create') }}"><i class="fas fa-plus-circle"></i></a>
+                </div>
+                <div class="col-md-7">
+                    <h2 class="card-title">Listado de clientes registrados en la base de datos</h2>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/clients/import') }}"><i class="fas fa-file-import"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/clients/cards') }}"><i class="fas fa-border-all"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/clients/chart') }}"><i class="fas fa-chart-bar"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/clients/exportToXlsx') }}"><i class="fas fa-file-excel"></i></a>
+                         <span onclick="exportClientsToCSV(event.target)" data-href="/exportClientsToCSV" id="export" class="btn btn-outline-info mr-2"><i class="fas fa-file-csv"></i></span>
+                        <a class="btn btn-outline-info mr-2" href="{{ route('clients.pdf') }}"><i class="fas fa-file-pdf"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/clients/xml') }}"><i class="fas fa-file-code"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
 
-<div class="container">
-	<center><h4>"Faurecia México"</h4></center>
-	<div class="col-6">
+            <table id="example" class="table table-striped table-responsive">
+
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Cliente</th>
+                        <th>Información</th>
+                        <th>Detalles</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    @forelse ($clients as $client)
+                    <tr>
+                        <td>
+                            <img style="width: 200px; height: 100; object-fit: cover" src="/imagenes/clients/{{ $client->image }}" alt="{{ $client->Firstname }} {{ $client->Secondname}}" />
+                        </td>
+                        <td style="width: 20%">
+                            <a href="{{ route('clients.show', $client->id) }}">
+                                <h4 class="text-left"> <span class="badge bg-info">{{ $client->Firstname }} {{ $client->Secondname }}</span></h4></td>
+                            </a>
+                        <td style="width: 25%">
+                            <p><b>Empleo: </b>{{ $client->Job }}</p>
+                            <p><b>Sueldo: </b>{{ $client->Salary }}</p>
+                            <p><b>Banco: </b>{{ $client->Bank }}</p>
+                            <p><b>No.Cuenta: </b>{{ $client->Numcount }}</p>
+                            </p>
+                        </td>
+                        <td style="width: 25%">
+                        	<p><b>Domicilio: </b>{{ $client->Address }}</p>
+                        	<p><b>Teléfono: </b>{{ $client->Phone }}</p>
+                        	<p><b>Correo: </b>{{ $client->Email }}</p>
+                        </td>
+
+                    @empty
+                        <h1>La tabla no tiene datos</h1>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+      </div>
 </div>
 
-  
 
-<div class="card">
-  <div class="card-header bg-primary">
-  	<div class="row">
-  		<div class="col-md-8">
-    		<h4 class="card-title"><center>Clientes Registrados en la Base de Datos</center></h4>
-    	</div>
-    	<div class="col-md-4">
-    		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    			<span onclick="exportToCsv(event.target)" data-href="/exportToCsv" id="export" class="btn btn-secondary">Exportar a CSV</span>
-    			<a class="btn btn-success" href="{{ route('clients.create') }}"><b>+ Nuevo</b></a>
-     			</div>
-     		</div>
-  		</div>
-  </div>
-	
-		<div class="card-body">
-  			<table class="table table-hover">
-						<tr>
-							<th><h5>Cliente</h5></th>
-							<th><h5>Información</h5></th>
-							<th><h5>Detalles</h5></th>
-							<th><h5>Acciones</h5></th>
-						</tr>
-					</thead>
+<!-- DataTables -->
+<script src="{{ asset('assets/js/jquery-3.5.1.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
 
-					<tbody>
-						<?php foreach ($clients as $client):?>
-							<tr>
-								<td>
-									<p> <b>Nombre:</b> <?=$client->Firstname ?></tp>
-									<p> <b>Apellidos:</b> <?=$client->Secondname ?></p>
-								</td>
-
-								<td>
-									<p> <b>Empleo: </b> <?=$client->Job ?></p>
-									<p> <b>Salario: </b> <?=$client->Salary ?></p>
-									<p> <b>Banco:</b> <?=$client->Bank ?></p>
-									<p> <b>Número de Cuenta:</b> <?=$client->Numcount ?></p>
-								</td>
-
-								<td>
-									<p> <b>Domicilio: </b> <?=$client->Address ?></p>
-									<p> <b>Teléfono:</b> <?=$client->Phone ?></p>
-									<p> <b>Correo:</b> <?=$client->Email ?></p>
-								</td>
-
-								<td> 
-								<form action="{{ route('clients.destroy', $client->id) }}" method="post">
-      									<a type="submit" class="btn btn-danger" href="{{ route('clients.show', $client->id) }}">Consultar</a>
-      									<!-- <a type="submit" class="btn btn-success" href="{{ route('clients.edit', $client->id) }}">Editar</a>
-       									@csrf
-      									@method('DELETE')
-      									<button type="submit" class="btn btn-danger">Eliminar</button> -->
-    								</form> 
-								</div>
-							</td>
-						</tr>	
-						<?php endforeach ?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</body>
-
-<script type="text/javascript">
-	function Edition() {
-		if (confirm("¿Desea Editar este Registro?")) {
-			return true;
-		}else{
-			return false;
-		}
-	}
-	function Delete(){
-		if (confirm("¿Desea Eliminar este Registro?")) {
-			return true;
-		}else{
-			return false;
-		}
-	}
+<!-- Aplicación de DataTable -->
+<script>
+    $(function() {
+        $('#example').DataTable({
+            dom: 'Blfrtip',
+            buttons: [
+            'pdf', 'print'
+            ],
+        });
+    } );
 </script>
-</html>
-<br>
 
 <script>
-	function exportToCsv(_this){
-		let _url = $(_this) data('href');
-		window.location.href = _url;
-	}
+    function exportClientsToCSV(_this) {
+        let _url = $(_this).data('href');
+        window.location.href = _url;
+    }
 </script>
+
 @endsection

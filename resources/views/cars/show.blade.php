@@ -1,62 +1,75 @@
-@extends('layout.footer')
 @extends('layouts.plantilla')
+
 @section('content')
 
-<center>
-  <div class="col-sn-10"><h4>Información del Vehículo</h4></div>
-  </center>
-
-
-  <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-    <a class="btn btn-primary" href="{{ route('cars.index') }}">Volver al Registro</a></div>
-</div>
-
-
-<br>
-
-<div class="card text-center">
-  <div class="card-header bg-primary">
-     <h5>{{ $car->brand }} {{ $car->model }}</h5>
-  </div>
-
-  <div class="card-body bg-light">
-    <div class="row">
-  <div class="col-sm-6">
+<div class="container">
+<br><br>
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Información del Vehículo</h5>
-        <p class="card-text"><b>Número de Serie:</b> {{ $car->serialNumber}} <b>Matrícula: </b>{{ $car->matricule}}</p>
-        <p class="card-text"><b>Número de Puertas:</b> {{ $car->numberDoors}} <b>Número de Asientos: </b>{{ $car->numberChair}}</p>
-        <p class="card-text"><b>Color:</b> {{ $car->color}}</p>
-         <form action="{{ route('cars.destroy', $car->id) }}" method="post">
-         <a type="submit" class="btn btn-success" href="{{ route('cars.edit', $car->id) }}">Editar Registro</a>
-       @csrf
-      @method('UPDATE')
-    </form> 
-      </div>
-    </div>
-  </div>
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card-title">
+                        <h2>Vehículo: {{ $car->brand }} {{ $car->model }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a class="btn btn-primary" href="{{ route('cars.index') }}">< Regresar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Detalles del Vehículo</h5>
-        <p class="card-text"><b>Descripcíón:</b> {{ $car->description}} <b>Comentario:</b> {{ $car->comentary}}</p>
-          <p class="card-text"><b>Kilometraje:</b> {{ $car->mileage}} <b>Número de Cilindros:</b> {{ $car->numberCylenders}}</p>
-          <p class="card-text"><b>Disponible:</b> {{ $car->available}} </p>
-        <form action="{{ route('cars.destroy', $car->id) }}" method="post">
-       @csrf
-      @method('DELETE')
-      <button type="submit" class="btn btn-danger">Eliminar Registro</button>
-    </form> 
+        <div class="card-body">
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <th>Vehículo</th>
+                        <th>Información</th>
+                        <th>Detalles</th>
+                        <th>Descripción</th>
+                        <th>Comentario</th>
+                    </tr>
+                    
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>Imagen</p>
+                        <td>
+                            <p><b>Número de serie: </b>{{ $car->serialNumber }}</p>
+                            <p><b>Color: </b>{{ $car->color }}</p>
+                            <p><b>Puertas: </b>{{ $car->numberDoors }}</p>
+                            <p><b>Asientos: </b>{{ $car->numberChair }}</p>
+                            <p class="text-uppercase"><b class="text-capitalize">Matrícula: </b>{{ $car->matricule }}</p>
+                        </td>
+                        <td>
+                          <p><b>Kilometraje: </b>{{ $car->mileage }}</p>
+                          <p><b>Cilindros: </b>{{ $car->numberCylenders }}</p>
+                          <p><b>Disponibilidad1: </b>{{ $car->available }}</p>
+                        </td>
+                        <td><p>{{ $car->description }}</p></td>
+                        <td><p>{{ $car->comentary }}</p></td>
+                    </tr>
+                
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="col">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a class="btn btn-primary" href="{{ route('cars.edit', $car->id) }}">Editar</a>
+                    <form action="{{ route('cars.destroy', $car->id) }}" method="post">
+                        @csrf
+                        @method('DELETE')
+                        <input class="btn btn-danger" type="submit" value="Eliminar">
+                    </form>
+                </div>
+            </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-<br>
-  <div class="card-footer text-muted">
-    <b>Última Edición: 12 de Marzo de 2021</b>
-  </div>
 </div>
 
 @endsection

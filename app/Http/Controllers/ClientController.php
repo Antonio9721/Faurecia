@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade as PDF;
-//use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ClientsExport;
+use App\Exports\ClientExport;
+use App\Imports\ClientsImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class ClientController extends Controller
 {
@@ -18,8 +19,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-         $clients = DB::table('clients')->paginate(5);
-        return view('clients.index', compact('clients'));
+         $clients = Client::all();
+        return view ('clients.index', compact('clients'));
     }
 
     /**
@@ -40,8 +41,19 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        Client::create($request->all());
-        return redirect()->route('clients.index');
+        $client = $request->all();
+        if ($img = $request->file('image')){
+            $destinationPath = 'imagenes/clients/';
+            $name = date('YmdHis') . "." .
+            $img->getClientOriginalExtension();
+            $img->move($destinationPath, $name);
+            $client['image'] = "$name";
+        }
+
+        Client::create($client);
+
+        return redirect()->to(url('/clients'));
+
     }
 
     /**
@@ -75,22 +87,9 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
-        $request->validate(
-            [
-            'Firstname' => 'required',
-            'Secondname' => 'required',
-            'Address' => 'required',
-            'Job'=> 'required',
-            'Salary'=> 'required',
-            'Bank'=> 'required',
-            'Numcount'=> 'required',
-            'Phone'=> 'required',
-            'Email'=> 'required'
-                ]
-    );
-        $client->update($request->all());
-
-        return redirect()->route('clients.index');
+       $dataClient = request()->except('_token');
+        $client->update($dataClient);
+        return redirect()->to(url('/clients'));
     }
 
     /**
@@ -104,24 +103,16 @@ class ClientController extends Controller
         $client->delete();
         return redirect()->route('clients.index');
     }
-
     public function exportToPDF()
     {
-           $clients = Client::get();
-           $pdf = PDF::loadView('clients.exportToPDF', compact('clients'));
-           return $pdf->download('ListadoClientes.pdf');
-       }
+        $clients = Client::get();
+        $pdf = PDF::loadView('clients.exportToPDF', compact('clients'));
+        return $pdf->download('ListadoClientes.pdf');
+    }
 
-       public function exportToXls()
-       {
-        return Excel::download(new ClientsExport, 'clients.xlsx');
-
-       }
-
-       public function exportToCsv()
-       {
+    public function exportClientsToCSV(Request $request) {
         $fileName   = 'clients.csv';
-        $clients = Clients::all();
+        $clients    =  Client::all();
 
         $headers = array(
             "Content-type"         => "text/csv",
@@ -137,7 +128,7 @@ class ClientController extends Controller
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
-            foreach($clients as $client) {
+            foreach ($clients as $client) {
                 $row['Firstname']    = $client->Firstname;
                 $row['Secondname']   = $client->Secondname;
                 $row['Address']      = $client->Address;
@@ -153,5 +144,54 @@ class ClientController extends Controller
             fclose($file);
         };
         return response()->stream($callback, 200, $headers);
-       }
+    }
+    public function chart() {
+
+        $clients = Client::select(\DB::raw("COUNT(*) as count"))
+            ->whereYear('created_at', date('Y'))
+            ->groupBy(\DB::raw("Minute(created_at)"))
+            ->pluck('count');
+
+        $clients2 = Client::select(\DB::raw("COUNT(*) as count"))
+        ->whereBetween('Bank', ([2, 5]))
+        ->groupBy(\DB::raw("Bank"))
+        ->pluck('count');
+
+        return view ('clients.chart')
+            ->with('clients', $clients)
+            ->with('clients2', $clients2);
+    }
+
+    public function cards(){
+        $clients = Client::all();
+        return view('clients.cards', compact('clients'));
+    }
+
+    public function exportToXlsx() {
+        return Excel::download(new ClientExport, 'clients.xlsx');
+    }
+
+    public function import() {
+        return view('clients.import');
+    }
+
+    public function importData(Request $request) {
+        Excel::import(new ClientsImport, request()->file('excel'));
+        return redirect()->to(url('clients'));
+
+    }
+
+    public function exportXml() {
+        $clients = Client::all();
+        header("Content-type: text/xml");
+        echo ("<clients>");
+        foreach ($clients as $client) {
+            echo ("<nombre>" . $client['Firstname'] . "</nombre>" );
+            echo ("<apellidos>" . $client['Secondname'] . "</apellidos>" );
+            echo ("<empleo>" . $client['Job'] . "</empleo>" );
+            echo ("<salario>" . $client['Salary'] . "</salario>" );
+}
+echo ("</clients>");
+}
+
 }

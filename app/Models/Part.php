@@ -10,6 +10,7 @@ class Part extends Model
     use HasFactory;
 
     protected $fillable = [
+        'image',
     	'Name',
     	'Mark',
     	'Model',

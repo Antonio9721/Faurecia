@@ -15,6 +15,7 @@ class CreatePartsTable extends Migration
     {
         Schema::create('parts', function (Blueprint $table) {
             $table->id();
+            $table->string('image')->nullable();
             $table->string('Name', 25);
             $table->string('Mark', 25);
             $table->text('Model');

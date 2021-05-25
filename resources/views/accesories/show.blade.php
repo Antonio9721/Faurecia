@@ -1,59 +1,71 @@
-@extends('layout.footer')
 @extends('layouts.plantilla')
+
 @section('content')
 
-<center>
-  <div class="col-sn-10"><h4>Información del Accesorio</h4></div>
-  </center>
-
-
-  <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-    <a class="btn btn-primary" href="{{ route('accesories.index') }}">Volver al Registro</a></div>
-</div>
-
-
-<br>
-
-<div class="card text-center">
-  <div class="card-header bg-primary">
-     <h5>{{ $accesory->Name }} {{ $accesory->Model }}</h5>
-  </div>
-
-  <div class="card-body bg-light">
-    <div class="row">
-  <div class="col-sm-6">
+<div class="container">
+<br><br>
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Descripción</h5>
-        <p class="card-text"><b>Precio:</b> {{ $accesory->Price}} <b>Estado: </b>{{ $accesory->State}}</p>
-        <p class="card-text"><b>Número de Serie:</b> {{ $accesory->Numserie}}</p>
-         <form action="{{ route('accesories.destroy', $accesory->id) }}" method="post">
-         <a type="submit" class="btn btn-success" href="{{ route('accesories.edit', $accesory->id) }}">Editar Registro</a>
-       @csrf
-      @method('UPDATE')
-    </form> 
-      </div>
-    </div>
-  </div>
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card-title">
+                        <h2>Vehículo: {{ $accesory->Name }} {{ $accesory->Model }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a class="btn btn-primary" href="{{ route('accesories.index') }}">< Regresar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Detalles</h5>
-        <p class="card-text"><b>Fecha de Adquisición:</b> {{ $accesory->Date}} <b>Hora de Adquisición:</b> {{ $accesory->Time}}</p>
-          <p class="card-text"><b>Disponible:</b> {{ $accesory->Available}} <b>Comentario: </b>{{$accesory->Comentary}}
-        <form action="{{ route('accesories.destroy', $accesory->id) }}" method="post">
-       @csrf
-      @method('DELETE')
-      <button type="submit" class="btn btn-danger">Eliminar Registro</button>
-    </form> 
+        <div class="card-body">
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <th>Accesorio</th>
+                        <th>Información</th>
+                        <th>Detalles</th>
+                        <th>Comentario</th>
+                    </tr>
+                    
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>Imagen</p>
+                        <td>
+                            <p><b>No.Serie: </b>{{ $accesory->Numserie }}</p>
+                            <p><b>Precio: </b>{{ $accesory->Price }}</p>
+                            <p><b>Estado: </b>{{ $accesory->State }}</p>
+                            <p class="text-uppercase"><b class="text-capitalize">Disponibilidad: </b>{{ $accesory->Available }}</p>
+                        </td>
+                        <td>
+                          <p><b>Fecha: </b>{{ $accesory->Date }}</p>
+                          <p><b>Hora: </b>{{ $accesory->Time }}</p>
+                        </td>
+                        <td><p>{{ $accesory->Comentary }}</p></td>
+                    </tr>
+                
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="col">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a class="btn btn-primary" href="{{ route('accesories.edit', $accesory->id) }}">Editar</a>
+                    <form action="{{ route('accesories.destroy', $accesory->id) }}" method="post">
+                        @csrf
+                        @method('DELETE')
+                        <input class="btn btn-danger" type="submit" value="Eliminar">
+                    </form>
+                </div>
+            </div>
+        </div>
       </div>
-    </div>
-  </div>
 </div>
-<br>
-  <div class="card-footer text-muted">
-    <b>Última Edición: 12 de Marzo de 2021</b>
-</div>
-<br>
+
 @endsection

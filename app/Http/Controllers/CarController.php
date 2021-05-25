@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Car;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade as PDF;
-//use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\CarsExport;
+use App\Exports\CarExport;
+use App\Imports\CarsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CarController extends Controller
 {
@@ -18,8 +18,9 @@ class CarController extends Controller
      */
     public function index()
     {
-        $cars = DB::table('cars')->paginate(5);
-        return view('cars.index', compact('cars'));
+        
+       $cars = Car::all();
+        return view ('cars.index', compact('cars'));
     }
 
     /**
@@ -40,8 +41,19 @@ class CarController extends Controller
      */
     public function store(Request $request)
     {
-        Car::create($request->all());
-        return redirect()->route('cars.index');
+        $car = $request->all();
+        if ($img = $request->file('image')){
+            $destinationPath = 'imagenes/cars/';
+            $name = date('YmdHis') . "." .
+            $img->getClientOriginalExtension();
+            $img->move($destinationPath, $name);
+            $car['image'] = "$name";
+        }
+
+        Car::create($car);
+
+        return redirect()->to(url('/cars'));
+
     }
 
     /**
@@ -75,26 +87,9 @@ class CarController extends Controller
      */
     public function update(Request $request, Car $car)
     {
-        $request->validate(
-            [
-            'brand' => 'required',
-            'model' => 'required',
-            'color' => 'required',
-            'serialNumber'=> 'required',
-            'matricule'=> 'required',
-            'numberDoors'=> 'required',
-            'numberChair'=> 'required',
-            'numberDoors'=> 'required',
-            'mileage'=> 'required',
-            'numberCylenders'=> 'required',
-            'description'=> 'required',
-            'comentary'=> 'required',
-            'available'=> 'required'
-                ]
-    );
-        $car->update($request->all());
-
-        return redirect()->route('cars.index');
+        $dataCar = request()->except('_token');
+        $car->update($dataCar);
+        return redirect()->to(url('/cars'));
     }
 
     /**
@@ -106,26 +101,12 @@ class CarController extends Controller
     public function destroy(Car $car)
     {
         $car->delete();
-        return redirect()->route('cars.index');
+        return redirect()->to(url('/cars'));
     }
 
-    public function exportToPDF()
-    {
-        $cars = Car::get();
-           $pdf = PDF::loadView('cars.exportToPDF', compact('cars'));
-           return $pdf->download('ListadoCarros.pdf');
-       }
-
-       public function exportToXls()
-       {
-        return Excel::download(new CarsExport, 'cars.xlsx');
-
-       }
-
-       public function exportToCsv()
-       {
+    public function exportCarsToCSV(Request $request){
         $fileName   = 'cars.csv';
-         $cars = Cars::all();
+        $cars = Car::all();
 
         $headers = array(
             "Content-type"         => "text/csv",
@@ -160,4 +141,54 @@ class CarController extends Controller
         };
         return response()->stream($callback, 200, $headers);
        }
+
+    public function chart() {
+
+    $cars = Car::select(\DB::raw("COUNT(*) as count"))
+        ->whereYear('created_at', date('Y'))
+        ->groupBy(\DB::raw("Minute(created_at)"))
+        ->pluck('count');
+
+    $cars2 = Car::select(\DB::raw("COUNT(*) as count"))
+        ->whereBetween('numberChair', ([2, 5]))
+        ->groupBy(\DB::raw("numberChair"))
+        ->pluck('count');
+
+        return view ('cars.chart')
+            ->with('cars', $cars)
+            ->with('cars2', $cars2);
+    }
+
+    public function cards(){
+        $cars = Car::all();
+        return view('cars.cards', compact('cars'));
+    }
+
+    public function exportToXlsx() {
+        return Excel::download(new CarExport, 'cars.xlsx');
+    }
+
+    public function import() {
+        return view('cars.import');
+    }
+
+    public function importData(Request $request) {
+        Excel::import(new CarsImport, request()->file('excel'));
+        return redirect()->to(url('cars'));
+
+    }
+
+    public function exportXml() {
+        $cars = Car::all();
+        header("Content-type: text/xml");
+        echo ("<cars>");
+        foreach ($cars as $car) {
+            echo ("<marca>" . $car['brand'] . "</marca>" );
+            echo ("<modelo>" . $car['model'] . "</modelo>" );
+            echo ("<color>" . $car['color'] . "</color>" );
+            echo ("<description>" . $car['description'] . "</description>" );
+}
+echo ("</cars>");
+}
+
 }

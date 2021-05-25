@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Employe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade as PDF;
-//use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\EmployesExport;
+use App\Exports\EmployeExport;
+use App\Imports\EmployesImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeController extends Controller
 {
@@ -18,8 +18,8 @@ class EmployeController extends Controller
      */
     public function index()
     {
-        $employes = DB::table('employes')->paginate(5);
-        return view('employes.index', compact('employes'));
+        $employes = Employe::all();
+        return view ('employes.index', compact('employes'));
     }
 
     /**
@@ -41,8 +41,19 @@ class EmployeController extends Controller
      */
     public function store(Request $request)
     {
-         Employe::create($request->all());
-        return redirect()->route('employes.index');
+        $employe = $request->all();
+        if ($img = $request->file('image')){
+            $destinationPath = 'imagenes/employes/';
+            $name = date('YmdHis') . "." .
+            $img->getClientOriginalExtension();
+            $img->move($destinationPath, $name);
+            $employe['image'] = "$name";
+        }
+
+        Employe::create($employe);
+
+        return redirect()->to(url('/employes'));
+
     }
 
     /**
@@ -76,20 +87,9 @@ class EmployeController extends Controller
      */
     public function update(Request $request, Employe $employe)
     {
-         $request->validate(
-            [
-            'Firstname' => 'required',
-            'Secondname' => 'required',
-            'Area' => 'required',
-            'Salary'=> 'required',
-            'Keycode'=> 'required',
-            'Email'=> 'required',
-            'Phone'=> 'required'
-                ]
-    );
-        $employe->update($request->all());
-
-        return redirect()->route('employes.index');
+         $dataEmploye = request()->except('_token');
+        $employe->update($dataEmploye);
+        return redirect()->to(url('/employes'));
     }
 
     /**
@@ -104,23 +104,28 @@ class EmployeController extends Controller
         return redirect()->route('employes.index');
     }
 
-    public function exportToPDF()
-    {
-        $employes = Employe::get();
-           $pdf = PDF::loadView('employes.exportToPDF', compact('employes'));
-           return $pdf->download('ListadoEmpleados.pdf');
-       }
+  public function exportToPDF() {
+    $employes = Employe::get();
+    $pdf = PDF::loadView('employes.exportToPDF', compact('employes'));
+    return $pdf->download('ListadoEmpleados.pdf');
+  }
 
-       public function exportToXls()
-       {
-        return Excel::download(new EmployesExport, 'employes.xlsx');
+  /*public function getAllEmployes()
+  {
+    $employes = Employe::all();
+    return view('employe', compact('employes'));
+  }
 
-       }
+  public function downloadPDF()
+  {
+    $employes = Employe::all();
+    $pdf = PDF::loadView('employe',compact('employes'));
+    return $pdf->download('employes.pdf');
+  }*/
 
-       public function exportToCsv()
-       {
-         $fileName   = 'employes.csv';
-         $employes = Employes::all();
+    public function exportEmployesToCSV(Request $request) {
+        $fileName   = 'employes.csv';
+        $employes = Employe::all();
 
         $headers = array(
             "Content-type"         => "text/csv",
@@ -151,4 +156,63 @@ class EmployeController extends Controller
         };
         return response()->stream($callback, 200, $headers);
        }
+
+    public function chart() {
+
+        $employes = Employe::select(\DB::raw("COUNT(*) as count"))
+            ->whereYear('created_at', date('Y'))
+            ->groupBy(\DB::raw("Second(created_at)"))
+            ->pluck('count');
+
+        $employes2 = Employe::select(\DB::raw("COUNT(*) as count"))
+        ->whereBetween('Area', ([2, 5]))
+        ->groupBy(\DB::raw("Area"))
+        ->pluck('count');
+
+        return view ('employes.chart')
+            ->with('employes', $employes)
+            ->with('employes2', $employes2);
+    }
+
+    public function cards(){
+        $employes = Employe::all();
+        return view('employes.cards', compact('employes'));
+    }
+
+    public function exportToXlsx() {
+        return Excel::download(new EmployeExport, 'employes.xlsx');
+    }
+
+    public function import() {
+        return view('employes.import');
+    }
+
+    public function importData(Request $request) {
+        Excel::import(new EmployesImport, request()->file('excel'));
+        return redirect()->to(url('employes'));
+
+    }
+    public function importText(Request $request) {
+        Text::import(new EmployesImport, request()->file('text'));
+        return redirect()->to(url('employes'));
+
+    }
+    public function importCSV(Request $request) {
+        Csv::import(new EmployesImport, request()->file('csv'));
+        return redirect()->to(url('employes'));
+
+    }
+
+    public function exportXml() {
+        $employes = Employe::all();
+        header("Content-type: text/xml");
+        echo ("<employes>");
+        foreach ($employes as $employe) {
+            echo ("<nombre>" . $employe['Firstname'] . "</nombre>" );
+            echo ("<apellidos>" . $employe['Secondname'] . "</apellidos>" );
+            echo ("<area>" . $employe['Area'] . "</area>" );
+            echo ("<clave>" . $employe['Keycode'] . "</clave>" );
+}
+echo ("</employes>");
+}
 }

@@ -1,4 +1,4 @@
-<?php
+!<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,6 +15,7 @@ class CreateCarsTable extends Migration
     {
         Schema::create('cars', function (Blueprint $table) {
             $table->id();
+            $table->string('image')->nullable();
             $table->string('brand', 100);
             $table->string('model', 50);
             $table->string('color', 50)->nullable();

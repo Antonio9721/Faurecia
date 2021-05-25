@@ -1,60 +1,70 @@
-@extends('layout.footer')
 @extends('layouts.plantilla')
+
 @section('content')
 
-<center>
-  <div class="col-sn-10"><h4>Información de la Autoparte</h4></div>
-  </center>
-
-
-  <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-    <a class="btn btn-primary" href="{{ route('parts.index') }}">Volver al Registro</a></div>
-</div>
-
-
-<br>
-
-<div class="card text-center">
-  <div class="card-header bg-primary">
-     <h5>{{ $part->Name }}</h5>
-  </div>
-
-  <div class="card-body bg-light">
-    <div class="row">
-  <div class="col-sm-6">
+<div class="container">
+<br><br>
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Información</h5>
-        <p class="card-text"><b>Marca:</b> {{ $part->Mark}} <b>Modelo: </b>{{ $part->Model}}</p>
-        <p class="card-text"><b>Precio Unitario:</b> {{ $part->Price}}</p>
-         <form action="{{ route('parts.destroy', $part->id) }}" method="post">
-         <a type="submit" class="btn btn-success" href="{{ route('parts.edit', $part->id) }}">Editar Registro</a>
-       @csrf
-      @method('UPDATE')
-    </form> 
-      </div>
-    </div>
-  </div>
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card-title">
+                        <h2>Autoparte: {{ $part->Name }} {{ $part->Mark }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a class="btn btn-primary" href="{{ route('parts.index') }}">< Regresar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Detalles</h5>
-        <p class="card-text"><b>Descripción:</b> {{ $part->Description}} <b>Disponibilidad:</b> {{ $part->Available}}</p>
-          <p class="card-text"><b>Comentario:</b> {{ $part->Comentary}}</p>
-        <form action="{{ route('parts.destroy', $part->id) }}" method="post">
-       @csrf
-      @method('DELETE')
-      <button type="submit" class="btn btn-danger">Eliminar Registro</button>
-    </form> 
+        <div class="card-body">
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <th>Autoparte</th>
+                        <th>Información</th>
+                       
+                        <th>Descripción</th>
+                        <th>Comentario</th>
+                    </tr>
+                    
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>Imagen</p>
+                        <td>
+                            <p><b>Modelo: </b>{{ $part->Model }}</p>
+                            <p><b>Precio: </b>{{ $part->Price }}</p>
+                            <p class="text-uppercase"><b class="text-capitalize">Disponibilidad: </b>{{ $part->Available }}</p>
+                        </td>
+                        <td>
+                          <p><b>: </b>{{ $part->Description }}</p>
+                        </td>
+                        <td><p>{{ $part->Comentary }}</p></td>
+                    </tr>
+                
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="col">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a class="btn btn-primary" href="{{ route('parts.edit', $part->id) }}">Editar</a>
+                    <form action="{{ route('parts.destroy', $part->id) }}" method="post">
+                        @csrf
+                        @method('DELETE')
+                        <input class="btn btn-danger" type="submit" value="Eliminar">
+                    </form>
+                </div>
+            </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-<br>
-  <div class="card-footer text-muted">
-    <b>Última Edición: 12 de Marzo de 2021</b>
-  </div>
 </div>
 
 @endsection

@@ -10,6 +10,7 @@ class Employe extends Model
     use HasFactory;
 
     protected $fillable = [
+        'image',
     	'Firstname',
     	'Secondname',
     	'Area',

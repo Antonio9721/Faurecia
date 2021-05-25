@@ -1,106 +1,97 @@
-@extends('layout.footer')
 @extends('layouts.plantilla')
+
+@section('title', 'Accesorios')
 
 @section('content')
 
-<div class="container">
-	
-<div class="card">
-  <div class="card-header bg-primary">
-  	<div class="row">
-  		<div class="col-md-8">
-  			<center>
-    		<h4 class="card-title">Accesorios Registrados en la Base de Datos</h4>
-    		</center>
-    	</div>
-    	<div class="col-md-4">
-    		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    			<span onclick="exportToCsv(event.target)" data-href="/exportToCsv" id="export" class="btn btn-secondary">Exportar a CSV</span>
-    			<a class="btn btn-success" href="{{ route('accesories.create') }}"><b>+ Nuevo</b></a>
-     			</div>
-     		</div>
-  		</div>
-  </div>
-	
-		<div class="card-body">
-  			<table class="table table-hover">
-						<tr>
-							<th>Accesorio</th>
-							<th>Información</th>
-							<th>Destalles</th>
-							<th>Acciones</th>
-							
-						</tr>
-					</thead>
+<div class="">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-1">
+                    <a class="btn btn-outline-info" href="{{ route('accesories.create') }}"><i class="fas fa-plus-circle"></i></a>
+                </div>
+                <div class="col-md-7">
+                    <h2 class="card-title">Listado de accesorios registrados en la base de datos</h2>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/accesories/import') }}"><i class="fas fa-file-import"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/accesories/cards') }}"><i class="fas fa-border-all"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/accesories/chart') }}"><i class="fas fa-chart-bar"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/accesories/exportToXlsx') }}"><i class="fas fa-file-excel"></i></a>
+                         <span onclick="exportAccesoriesToCSV(event.target)" data-href="/exportAccesoriesToCSV" id="export" class="btn btn-outline-info mr-2"><i class="fas fa-file-csv"></i></span>
+                        <!-- <a class="btn btn-outline-info mr-2" href="{{ route('accesories.pdf') }}"><i class="fas fa-file-pdf"></i></a> -->
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/accesories/xml') }}"><i class="fas fa-file-code"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
 
-					<tbody>
-						<?php foreach ($accesories as $accesory):?>
-							<tr>
-								<td>
-									<p> <b>Nombre:</b> <?=$accesory->Name ?></p>
-									<p> <b>Modelo:</b> <?=$accesory->Model ?></p>
-									<p> <b>Número de Serie:</b> <?=$accesory->Numserie ?></p>
-								</td>
+            <table id="example" class="table table-striped table-responsive">
 
-								<td>
-									<p> <b>Precio:</b> <?=$accesory->Price ?></p>
-									<p> <b>Fecha de Adquisición:</b> <?=$accesory->Date ?></p>
-									<p> <b>Hora de Adquisición:</b> <?=$accesory->Time ?></p>
-								</td>
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Accesorio</th>
+                        <th>Detalles</th>
+                        <th>Comentario</th>
+                       
+                    </tr>
 
-								<td>
-									<p> <b>Estado:</b> <?=$accesory->State ?></p>
-									<p> <b>Disponible:</b> <?=$accesory->Available ?></p>
-									<p> <b>Comentario:</b> <?=$accesory->Comentary ?></p>
+                </thead>
 
-								</td>	
+                <tbody>
+                    @forelse ($accesories as $accesory)
+                    <tr>
+                        <td>
+                            <img style="width: 200px; height: 100; object-fit: cover" src="/imagenes/accesories/{{ $accesory->image }}" alt="{{ $accesory->Name }} {{ $accesory->Model }}" />
+                        </td>
+                        <td style="width: 25%">
+                            <a href="{{ route('accesories.show', $accesory->id) }}">
+                                <h4 class="text-left"> <span class="badge bg-info">{{ $accesory->Name }} {{ $accesory->Model }}</span></h4></td>
+                            </a>
+                        <td style="width: 35%">
+                            <p><b>Número de Serie:</b> {{ $accesory->Numserie }}</p>
+                            <p><b>Precio:</b> {{ $accesory->Price }}</p>
+                            </p>
+                        </td>
+                        <td style="width: 40%">
+                        	<p>{{ $accesory->Comentary }}</p></td>
 
-							
-								
-			
-								<td> 
-								<form action="{{ route('accesories.destroy', $accesory->id) }}" method="post">
-      									<a type="submit" class="btn btn-danger" href="{{ route('accesories.show', $accesory->id) }}">Consultar</a>
-      									<!-- <a type="submit" class="btn btn-success" href="{{ route('accesories.edit', $accesory->id) }}">Editar</a>
-       									@csrf
-      									@method('DELETE')
-      									<button type="submit" class="btn btn-danger">Eliminar</button> -->
-    								</form> 
-								</div>
-							</td>
-						</tr>	
-						<?php endforeach ?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</body>
+                    @empty
+                        <h1>La tabla no tiene datos</h1>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+      </div>
+</div>
 
-<script type="text/javascript">
-	function Edition() {
-		if (confirm("¿Desea Editar este Registro?")) {
-			return true;
-		}else{
-			return false;
-		}
-	}
-	function Delete(){
-		if (confirm("¿Desea Eliminar este Registro?")) {
-			return true;
-		}else{
-			return false;
-		}
-	}
+
+<!-- DataTables -->
+<script src="{{ asset('assets/js/jquery-3.5.1.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
+
+<!-- Aplicación de DataTable -->
+<script>
+    $(function() {
+        $('#example').DataTable({
+            dom: 'Blfrtip',
+            buttons: [
+            'pdf', 'print'
+            ],
+        });
+    } );
 </script>
-</html>
-<br>
 
 <script>
-	function exportToCsv(_this){
-		let _url = $(_this) data('href');
-		window.location.href = _url;
-	}
+    function exportAccesoriesToCSV(_this) {
+        let _url = $(_this).data('href');
+        window.location.href = _url;
+    }
 </script>
 
 @endsection

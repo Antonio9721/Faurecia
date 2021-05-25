@@ -1,109 +1,95 @@
-@extends('layout.footer')
 @extends('layouts.plantilla')
+
+@section('title', 'Vehículos')
+
 @section('content')
 
-<div class="container">
-	<center><h4>"Faurecia México"</h4></center>
-<div class="card">
-  <div class="card-header bg-primary">
-  	<div class="row">
-  		<div class="col-md-8">
-  			<center>
-    		<h4 class="card-title">Vehículos Registrados en la Base de Datos</h4>
-    		</center>
-    	</div>
-    	<div class="col-md-4">
-    		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    			<span onclick="exportToCsv(event.target)" data-href="/exportToCsv" id="export" class="btn btn-secondary">Exportar a CSV</span>
-    			<a class="btn btn-success" href="{{ route('cars.create') }}"><b>+ Nuevo</b></a>
-     			</div>
-     		</div>
-  		</div>
-  </div>
+<div class="">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-1">
+                    <a class="btn btn-outline-info" href="{{ route('cars.create') }}"><i class="fas fa-plus-circle"></i></a>
+                </div>
+                <div class="col-md-7">
+                    <h2 class="card-title">Listado de vehículos registrados en la base de datos</h2>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/cars/import') }}"><i class="fas fa-file-import"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/cars/cards') }}"><i class="fas fa-border-all"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/cars/chart') }}"><i class="fas fa-chart-bar"></i></a>
+                        <a class="btn btn-outline-info mr-2" href="{{ url('/cars/exportToXlsx') }}"><i class="fas fa-file-excel"></i></a>
+                    	 <span onclick="exportCarsToCSV(event.target)" data-href="/exportCarsToCSV" id="export" class="btn btn-outline-info mr-2"><i class="fas fa-file-csv"></i></span>
+                    	<a class="btn btn-outline-info mr-2" href="{{ route('cars.pdf') }}"><i class="fas fa-file-pdf"></i></a> 
+    					<a class="btn btn-outline-info mr-2" href="{{ url('/cars/xml') }}"><i class="fas fa-file-code"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
 
-  <div class="card-body">
-  	<table class="table table-hover">
-  		<thead>
-  			<tr>
-  				<th><h5>Vehículo</h5></th>
-  				<th><h5>Información</h5></th>
-  				<th><h5>Descripción</h5></th>
-  				<th><h5>Detalles</h5></th>
-  				<th><h5>Acciones</h5></th>
-  			</tr>
+            <table id="example" class="table table-striped table-responsive">
 
-  		</thead>
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Vehículo</th>
+                        <th>Información</th>
+                        <th>Descripción</th>
 
-  		<tbody>
-  			<?php foreach ($cars as $car):?>
-							<tr>
-								<td>
-									<p> <b> Marca:</b> <?=$car->brand ?> </p>
-									<p> <b> Modelo:</b> <?=$car->model ?> </p> 
-								</td>
+                    </tr>
 
-								<td>
-									<p> <b> Número de serie:</b> <?=$car->serialNumber ?> </p>
-									<p> <b> Puertas:</b> <?=$car->numberDoors ?> </p>
-									<p> <b> Asientos:</b> <?=$car->numberChair ?> </p>
-									<p> <b> Matrícula:</b> <?=$car->matricule ?> </p>
-							</td>
+                </thead>
 
-							<td>
-								<p> <b> Descripción:</b> <?=$car->description ?> </p>
-								<p> <b> Comentario:</b> <?=$car->comentary ?> </p>
-							</td>
-								<td>
-								<p> <b>Kilometraje:</b> <?=$car->mileage ?></p>
-								<p> <b>Cilindros:</b> <?=$car->numberCylenders ?></p>
-								<p> <b>Color:</b> <?=$car->color ?> </p>
-								<p> <b>Disponible:</b> <?=$car->available ?></p>
-							</td>
+                <tbody>
+                    @forelse ($cars as $car)
+                    <tr>
+                        <td>
+                            <img style="width: 200px; height: 100; object-fit: cover" src="/imagenes/cars/{{ $car->image }}" alt="{{ $car->brand }} {{ $car->model}}" />
+                        </td>
+                        <td style="width: 30%">
+                            <a href="{{ route('cars.show', $car->id) }}">
+                                <h4 class="text-left"> <span class="badge bg-info">{{ $car->brand }} {{ $car->model }}</span></h4></td>
+                            </a>
+                        <td style="width: 35%">
+                            <p>{{ $car->comentary }}</p>
+                            </p>
+                        </td>
+                        <td style="width: 35%"><p>{{ $car->description }}</p></td>
+
+                    @empty
+                        <h1>La tabla no tiene datos</h1>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+      </div>
+</div>
 
 
-							<td> 
-								<form action="{{ route('cars.destroy', $car->id) }}" method="post">
-      									<a type="submit" class="btn btn-danger" href="{{ route('cars.show', $car->id) }}">Consultar</a>
-      									<!-- <a type="submit" class="btn btn-success" href="{{ route('cars.edit', $car->id) }}">Editar</a>
-       									@csrf
-      									@method('DELETE')
-      									<button type="submit" class="btn btn-danger">Eliminar</button> -->
-    								</form> 
-								</div>
-							</td>
-						</tr>
-								<?php endforeach ?>		
-	
-		</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</body>
+<!-- DataTables -->
+<script src="{{ asset('assets/js/jquery-3.5.1.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
 
-<script type="text/javascript">
-	function Edition() {
-		if (confirm("¿Desea Editar este Registro?")) {
-			return true;
-		}else{
-			return false;
-		}
-	}
-	function Delete(){
-		if (confirm("¿Desea Eliminar este Registro?")) {
-			return true;
-		}else{
-			return false;
-		}
-	}
+<!-- Aplicación de DataTable -->
+<script>
+    $(function() {
+        $('#example').DataTable({
+            dom: 'Blfrtip',
+            buttons: [
+                'pdf', 'print'
+                ],
+        });
+    } );
 </script>
-</html>
-<br>
 
 <script>
-	function exportToCsv(_this){
-		let _url = $(_this) data('href');
-		window.location.href = _url;
-	}
+    function exportCarsToCSV(_this) {
+        let _url = $(_this).data('href');
+        window.location.href = _url;
+    }
 </script>
+
 @endsection
